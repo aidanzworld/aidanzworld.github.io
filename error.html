@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STC Football League</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Oswald:wght@300;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            color: #f0f0f0;
+            background-color: #121212;
+            overflow-x: hidden;
+        }
+        header {
+            position: relative;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://media.discordapp.net/attachments/1256282182041731177/1268250330802552852/TimeForColor.png?ex=66abbda9&is=66aa6c29&hm=05f486cb0458f29c415ba245d4080fca0b163793e700e47d12b7533c55632e3b&=&format=webp&quality=lossless&width=1440&height=140') no-repeat center center/cover;
+            opacity: 0.5;
+            z-index: -1;
+        }
+        header img {
+            max-width: 100%;
+            height: auto;
+        }
+        nav {
+            background: #1e1e1e;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        nav a {
+            text-decoration: none;
+            padding: 15px 20px;
+            font-family: 'Oswald', sans-serif;
+            font-weight: 600;
+            color: #f0f0f0;
+            transition: transform 0.3s ease-in-out;
+        }
+        nav a img {
+            display: block;
+            max-height: 40px; /* Adjust as needed */
+            transition: transform 0.3s ease-in-out;
+        }
+        nav a:hover img, .dropdown:hover .dropbtn img {
+            transform: scale(1.1); /* Slightly increases size on hover */
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropbtn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: 'Oswald', sans-serif;
+            font-weight: 600;
+            padding: 0;
+            color: #f0f0f0;
+        }
+        .dropbtn img {
+            display: block;
+            max-height: 40px; /* Adjust as needed */
+            transition: transform 0.3s ease-in-out;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #1e1e1e;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            top: 100%;
+            left: 0;
+        }
+        .dropdown-content a {
+            color: #f0f0f0;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+            transition: background 0.3s;
+        }
+        .dropdown-content a:hover {
+            background-color: #333;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .hero h1 {
+            position: relative;
+            z-index: 1;
+        }
+        .footer {
+            background: #1e1e1e;
+            color: #f0f0f0;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+            box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="https://media.discordapp.net/attachments/1256282182041731177/1268234536613842954/STCHEADER.png?ex=66abaef4&is=66aa5d74&hm=b923e49c78d5de747d3413e33b9ecb22fddf8b92bbb1ddffb0712574e5a1418b&=&format=webp&quality=lossless" alt="STC Football League">
+    </header>
+    <nav>
+        <a href="index.html"><img src="https://media.discordapp.net/attachments/1256282182041731177/1268221874177839104/HOME.png?ex=66aba329&is=66aa51a9&hm=2ae830a26b94c81d7e42a9d49df69cce1128fdeb2cea9b34113f595775ea0da8&=&format=webp&quality=lossless" alt="Home"></a>
+        <a href="#"><img src="https://media.discordapp.net/attachments/1256282182041731177/1268221874727288964/TEAMS.png?ex=66aba329&is=66aa51a9&hm=e21ea8e6badd0c3e36f0af41c8ab84e064c934a504b741cda467d31a5f93cf77&=&format=webp&quality=lossless" alt="Teams"></a>
+        <a href="Schedule.html"><img src="https://media.discordapp.net/attachments/1256282182041731177/1268221873800482836/schedule.png?ex=66aba329&is=66aa51a9&hm=1c7774456da3faef3ea5da69aa1d47dfb3d8549ed7514d2ff8941d58cc63a20d&=&format=webp&quality=lossless" alt="Schedule"></a>
+        <a href="#"><img src="https://media.discordapp.net/attachments/1256282182041731177/1268221873569792031/STANDINGS.png?ex=66aba329&is=66aa51a9&hm=e2bddf2b3c6bc0a3661b89f85d023e60a5870f9979d6bec979d0723a9cc2124a&=&format=webp&quality=lossless" alt="Standings"></a>
+        <div class="dropdown">
+            <button class="dropbtn"><img src="https://media.discordapp.net/attachments/1256282182041731177/1268221872781136043/MORE.png?ex=66aba328&is=66aa51a8&hm=b24957c1e67b1f4fa0a54b479719f7adfdce950d507f4071710cb7f26af88eee&=&format=webp&quality=lossless" alt="More"></button>
+            <div class="dropdown-content">
+                <a href="#">News</a>
+                <a href="#">Contact</a>
+                <a href="#">About</a>
+            </div>
+        </div>
+    </nav>
+    <section class="hero animated">
+        <a href="https://discord.gg/stcs10">
+            <img src="https://media.discordapp.net/attachments/886258878168305694/1268293158245236851/TBA.png?ex=66abe58c&is=66aa940c&hm=c54da00381f38f13fe665ef93dd2d7654e4ed10e281b318fc5ce1348ab4a3c40&=&format=webp&quality=lossless" alt="Hero Image" style="width: 100%; height: auto; display: block;">
+        </a>
+    </section>
+    <footer class="footer">
+        <p>&copy; 2024 Sports Talk Club. Roblox Tackle Tool League. All rights reserved.</p>
+    </footer>
+</body>
+</html>
