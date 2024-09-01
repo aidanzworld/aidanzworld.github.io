@@ -3,16 +3,304 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sports Talk Club</title>
+    <meta name="description" content="The official source for STC News, schedules, stats, scores & more." />
+    <link rel="icon" href="https://media.discordapp.net/attachments/1254245452908331029/1268314268630257807/ImagesIMG_2695374.png?ex=66abf935&is=66aaa7b5&hm=84032fc728e38652a31baf1b77af6636275e6cfd09abfa838d2110f4349ad6ca&=&format=webp&quality=lossless" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Oswald:wght@300;600&display=swap" rel="stylesheet">
+<meta property="og:title" content="Sports Talk Club" />
+<meta property="og:description" content="The official source for STC News, schedules, stats, scores & more." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.sporttalkclub.com/" />
+<meta property="og:site_name" content="sporttalkclub.com" />
+<meta property="og:locale" content="en-US" />
+<meta property="og:image" content="https://media.discordapp.net/attachments/1254245452908331029/1268314268630257807/ImagesIMG_2695374.png?ex=66abf935&is=66aaa7b5&hm=84032fc728e38652a31baf1b77af6636275e6cfd09abfa838d2110f4349ad6ca&=&format=webp&quality=lossless" />
+<meta property="og:image:type" content="image/jpeg" />
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            color: #f0f0f0;
+            background-color: #121212;
+            overflow-x: hidden;
+        }
+        header {
+            position: relative;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://media.discordapp.net/attachments/1256282182041731177/1268250330802552852/TimeForColor.png?ex=66abbda9&is=66aa6c29&hm=05f486cb0458f29c415ba245d4080fca0b163793e700e47d12b7533c55632e3b&=&format=webp&quality=lossless&width=1440&height=140') no-repeat center center/cover;
+            opacity: 0.5;
+            z-index: -1;
+        }
+        header img {
+            max-width: 100%;
+            height: auto;
+        }
+        nav {
+            background: #1e1e1e;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        nav a {
+            text-decoration: none;
+            padding: 15px 20px;
+            font-family: 'Oswald', sans-serif;
+            font-weight: 600;
+            color: #f0f0f0;
+            transition: transform 0.3s ease-in-out;
+        }
+        nav a img {
+            display: block;
+            max-height: 40px; /* Adjust as needed */
+            transition: transform 0.3s ease-in-out;
+        }
+        nav a:hover img, .dropdown:hover .dropbtn img {
+            transform: scale(1.1); /* Slightly increases size on hover */
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropbtn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: 'Oswald', sans-serif;
+            font-weight: 600;
+            padding: 0;
+            color: #f0f0f0;
+        }
+        .dropbtn img {
+            display: block;
+            max-height: 40px; /* Adjust as needed */
+            transition: transform 0.3s ease-in-out;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #1e1e1e;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            top: 100%;
+            left: 0;
+        }
+        .dropdown-content a {
+            color: #f0f0f0;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+            transition: background 0.3s;
+        }
+        .dropdown-content a:hover {
+            background-color: #333;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .hero {
+            background: url('https://media.discordapp.net/attachments/1256282182041731177/1268263201053741058/Background2.png?ex=66abc9a6&is=66aa7826&hm=344b309aa1b089b89c488a769d00383f30bb72cffde0d14920a57eef80883f3c&=&format=webp&quality=lossless&width=1202&height=676') no-repeat center center/cover;
+            color: #fff;
+            padding: 80px 20px;
+            text-align: center;
+            font-size: 2.5rem;
+            font-family: 'Oswald', sans-serif;
+            background-blur: 10px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 0;
+        }
+        .hero h1 {
+            position: relative;
+            z-index: 1;
+        }
+        .news {
+            padding: 40px 20px;
+            background: #1e1e1e;
+            margin: 20px auto;
+            max-width: 1200px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+        }
+        .news-carousel {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+        .news-item {
+            min-width: 100%;
+            box-sizing: border-box;
+        }
+        .news-item img, .news-item video {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        .news-content {
+            padding: 20px;
+        }
+        .news-content h3 {
+            font-family: 'Oswald', sans-serif;
+            color: #f0f0f0;
+            margin: 0 0 10px;
+        }
+        .news-content p {
+            margin: 0;
+        }
+        .footer {
+            background: #1e1e1e;
+            color: #f0f0f0;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+            box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .carousel-controls {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+        }
+        .carousel-control {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 10px 20px;
+            transition: background 0.3s;
+        }
+        .carousel-control img {
+            height: 50px; /* Adjust as needed */
+            width: 50px; /* Adjust as needed */
+        }
+        .carousel-control:hover img {
+            filter: brightness(1.2);
+        }
+    </style>
     <title>We'll Be Back Soon</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <header>
+        <img src="https://media.discordapp.net/attachments/1256282182041731177/1268234536613842954/STCHEADER.png?ex=66abaef4&is=66aa5d74&hm=b923e49c78d5de747d3413e33b9ecb22fddf8b92bbb1ddffb0712574e5a1418b&=&format=webp&quality=lossless" alt="STC Football League">
+    </header>
+    <nav>
+        <a href="/home/"><img src="https://media.discordapp.net/attachments/1256282182041731177/1268221874177839104/HOME.png?ex=66aba329&is=66aa51a9&hm=2ae830a26b94c81d7e42a9d49df69cce1128fdeb2cea9b34113f595775ea0da8&=&format=webp&quality=lossless" alt="Home"></a>
+        <a href="/error/"><img src="https://media.discordapp.net/attachments/1256282182041731177/1268221874727288964/TEAMS.png?ex=66aba329&is=66aa51a9&hm=e21ea8e6badd0c3e36f0af41c8ab84e064c934a504b741cda467d31a5f93cf77&=&format=webp&quality=lossless" alt="Teams"></a>
+        <a href="/schedule/"><img src="https://media.discordapp.net/attachments/1256282182041731177/1268221873800482836/schedule.png?ex=66aba329&is=66aa51a9&hm=1c7774456da3faef3ea5da69aa1d47dfb3d8549ed7514d2ff8941d58cc63a20d&=&format=webp&quality=lossless" alt="Schedule"></a>
+        <a href="/error/"><img src="https://media.discordapp.net/attachments/1256282182041731177/1268221873569792031/STANDINGS.png?ex=66aba329&is=66aa51a9&hm=e2bddf2b3c6bc0a3661b89f85d023e60a5870f9979d6bec979d0723a9cc2124a&=&format=webp&quality=lossless" alt="Standings"></a>
+        <div class="dropdown">
+            <button class="dropbtn"><img src="https://media.discordapp.net/attachments/1256282182041731177/1268221872781136043/MORE.png?ex=66aba328&is=66aa51a8&hm=b24957c1e67b1f4fa0a54b479719f7adfdce950d507f4071710cb7f26af88eee&=&format=webp&quality=lossless" alt="More"></button>
+            <div class="dropdown-content">
+                <a href="#">News</a>
+                <a href="https://discord.gg/stcs10">Contact</a>
+                <a href="https://www.roblox.com/groups/11978413/The-Sports-Talk-Club#!/about">About</a>
+            </div>
     <div class="container">
         <h1>Site Under Maintenance</h1>
         <p>Our website is currently undergoing scheduled maintenance. We'll be back shortly.</p>
         <div class="progress-bar">
             <div class="progress"></div>
         </div>
+    </nav>
+    <section class="hero animated">
+        <a href="https://discord.com">
+            <img src="https://media.discordapp.net/attachments/1256282182041731177/1268230011354218537/image.png?ex=66abaabd&is=66aa593d&hm=ec8a43f953c754337c7c4208b34b8be8bc977af122de71a1a1d67a490f621395&=&format=webp&quality=lossless" alt="Hero Image" style="width: 100%; height: auto; display: block;">
+        </a>
+    </section>
+    <section class="news">
+        <div class="news-carousel">
+            <div class="news-item">
+                <img src="https://media.discordapp.net/attachments/1254245452908331029/1268267233654739004/STCBOWLPROMO.png?ex=66abcd67&is=66aa7be7&hm=08d5e5f6f6dc04277e782e77c9bef746a424e96c761f993e108d02792ffb55fb&=&format=webp&quality=lossless&width=1440&height=552" alt="News Image 1">
+                <div class="news-content">
+                    <h3>STC Bowl Live, August 17 in Detroit!</h3>
+                    <p>The 10th annual STC Bowl is coming to Michigan, after a great 10th season!</p>
+                </div>
+            </div>
+            <div class="news-item">
+                <img src="https://media.discordapp.net/attachments/1254245452908331029/1268268373620428831/STCBOWLBRACKET.png?ex=66abce77&is=66aa7cf7&hm=f5040860cb3f5a575dea8481be94214d1dc5412513fcd0e15b59cecec712cbc0&=&format=webp&quality=lossless&width=1226&height=676" alt="News Image 2">
+                <div class="news-content">
+                    <h3>Upcoming Playoff Games to Watch</h3>
+                    <p>STC Playoffs kick off, as Tampa Bay takes on the Minnesota Vikings at 1 PM. Then, at 8 followed by Green Bay vs the 49ers.</p>
+                </div>
+            </div>
+            <div class="news-item">
+                <video controls>
+                    <source src="https://www.youtube.com/watch?v=aAUIAqDk2A8" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="news-content">
+                    <h3>Vikings vs Jets: FULL GAME</h3>
+                    <p>Watch the Vikings take on the Jets in a full game, live on STC Network.</p>
+                </div>
+            </div>
+            <!-- Add more news items as needed -->
+        </div>
+        <div class="carousel-controls">
+            <button class="carousel-control prev"><img src="https://media.discordapp.net/attachments/1256282182041731177/1268262132559118379/2.png?ex=66abc8a7&is=66aa7727&hm=8b42234a994c70bddc2bad8c1ab05f5eead82a108bce83f935f5ebcb50430d5b&=&format=webp&quality=lossless" alt="Previous"></button>
+            <button class="carousel-control next"><img src="https://media.discordapp.net/attachments/1256282182041731177/1268262147322806362/1.png?ex=66abc8ab&is=66aa772b&hm=24a22f03d54ebd17d9212641bbff1cc6b228b4144debafc862f0137631b48ba2&=&format=webp&quality=lossless" alt="Next"></button>
+        </div>
+    </section>
+    <footer class="footer">
+        <p>&copy; 2024 Sports Talk Club. Roblox Tackle Tool League. All rights reserved.</p>
+    </footer>
+    <script>
+        const newsCarousel = document.querySelector('.news-carousel');
+        const newsItems = document.querySelectorAll('.news-item');
+        const prevButton = document.querySelector('.carousel-control.prev');
+        const nextButton = document.querySelector('.carousel-control.next');
+        let currentIndex = 0;
+
+        function updateCarousel() {
+            newsCarousel.style.transform = `translateX(-${currentIndex * 100}%)`;
+        }
+
+        nextButton.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % newsItems.length;
+            updateCarousel();
+        });
+
+        prevButton.addEventListener('click', () => {
+            currentIndex = (currentIndex - 1 + newsItems.length) % newsItems.length;
+            updateCarousel();
+        });
+
+        setInterval(() => {
+            currentIndex = (currentIndex + 1) % newsItems.length;
+            updateCarousel();
+        }, 12000); // Change the slide every 10 seconds
+    </script>
     </div>
 </body>
 </html>
