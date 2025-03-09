@@ -6,35 +6,63 @@
     <title>LCFA Heisman Race Voting</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            if (localStorage.getItem("voted")) {
-                document.getElementById("vote-section").innerHTML = "<p class='text-center text-lg font-bold'>You have already voted.</p>";
-            }
+        // Firebase Configuration (Replace with your actual config)
+        const firebaseConfig = {
+            apiKey: "AIzaSyBCghQoRGyF2kyV0dYjGePgDo1HL7T4iGI",
+            authDomain: "percentages-4b608.firebaseapp.com",
+            projectId: "percentages-4b608",
+            storageBucket: "percentages-4b608.firebasestorage.app",
+            messagingSenderId: "579998118690",
+            appId: "1:579998118690:web:4f449e6df66a4166ac2b7b"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        document.addEventListener("DOMContentLoaded", async function () {
             updateResults();
         });
-        
-        function vote(player) {
+
+        async function vote(player) {
             if (localStorage.getItem("voted")) {
                 alert("You have already voted!");
                 return;
             }
-            
-            let votes = JSON.parse(localStorage.getItem("votes")) || {};
-            votes[player] = (votes[player] || 0) + 1;
-            localStorage.setItem("votes", JSON.stringify(votes));
+
+            const playerRef = db.collection("votes").doc(player);
+            await playerRef.set({ count: firebase.firestore.FieldValue.increment(1) }, { merge: true });
+
             localStorage.setItem("voted", true);
             updateResults();
         }
-        
-        function updateResults() {
-            let votes = JSON.parse(localStorage.getItem("votes")) || {};
-            let totalVotes = Object.values(votes).reduce((a, b) => a + b, 0);
+
+        async function updateResults() {
+            const snapshot = await db.collection("votes").get();
+            let totalVotes = 0;
+            let voteData = {};
+
+            snapshot.forEach(doc => {
+                voteData[doc.id] = doc.data().count || 0;
+                totalVotes += doc.data().count || 0;
+            });
+
             document.querySelectorAll(".vote-result").forEach(el => {
                 let player = el.dataset.player;
-                let percentage = totalVotes > 0 ? ((votes[player] || 0) / totalVotes * 100).toFixed(1) : 0;
+                let percentage = totalVotes > 0 ? ((voteData[player] || 0) / totalVotes * 100).toFixed(1) : "0.0";
                 gsap.to(el, { textContent: `${percentage}%`, duration: 1, snap: { textContent: 1 } });
             });
+
+            if (localStorage.getItem("voted")) {
+                document.querySelectorAll(".vote-button").forEach(button => {
+                    button.disabled = true;
+                    button.classList.add("bg-gray-500", "cursor-not-allowed");
+                    button.classList.remove("bg-blue-500");
+                });
+            }
         }
     </script>
     <style>
@@ -83,33 +111,6 @@
                     </div>
                     <button onclick="vote('Player 2')" class="vote-button bg-blue-500 px-4 py-2 rounded">Vote</button>
                     <p class="ml-4 vote-result text-lg font-bold" data-player="Player 2">0%</p>
-                </div>
-                <div class="bg-gray-800 p-6 rounded-lg flex items-center player-card" data-player="Player 3">
-                    <img src="player3.jpg" alt="Player 3" class="w-24 h-24 rounded-full mr-4">
-                    <div class="flex-1">
-                        <h2 class="text-xl font-bold">Player 3 - WR</h2>
-                        <p>120 REC | 1600 YDS | 15 TDs</p>
-                    </div>
-                    <button onclick="vote('Player 3')" class="vote-button bg-blue-500 px-4 py-2 rounded">Vote</button>
-                    <p class="ml-4 vote-result text-lg font-bold" data-player="Player 3">0%</p>
-                </div>
-                <div class="bg-gray-800 p-6 rounded-lg flex items-center player-card" data-player="Player 4">
-                    <img src="player4.jpg" alt="Player 4" class="w-24 h-24 rounded-full mr-4">
-                    <div class="flex-1">
-                        <h2 class="text-xl font-bold">Player 4 - LB</h2>
-                        <p>120 TKL | 10 SACKS | 3 INTs</p>
-                    </div>
-                    <button onclick="vote('Player 4')" class="vote-button bg-blue-500 px-4 py-2 rounded">Vote</button>
-                    <p class="ml-4 vote-result text-lg font-bold" data-player="Player 4">0%</p>
-                </div>
-                <div class="bg-gray-800 p-6 rounded-lg flex items-center player-card" data-player="Player 5">
-                    <img src="player5.jpg" alt="Player 5" class="w-24 h-24 rounded-full mr-4">
-                    <div class="flex-1">
-                        <h2 class="text-xl font-bold">Player 5 - CB</h2>
-                        <p>50 TKL | 8 INTs | 2 TDs</p>
-                    </div>
-                    <button onclick="vote('Player 5')" class="vote-button bg-blue-500 px-4 py-2 rounded">Vote</button>
-                    <p class="ml-4 vote-result text-lg font-bold" data-player="Player 5">0%</p>
                 </div>
             </div>
         </div>
