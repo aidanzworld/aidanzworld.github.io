@@ -5,11 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LCFA Heisman Race Voting</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             if (localStorage.getItem("voted")) {
                 document.getElementById("vote-section").innerHTML = "<p class='text-center text-lg font-bold'>You have already voted.</p>";
             }
+            updateResults();
         });
         
         function vote(player) {
@@ -31,60 +33,83 @@
             document.querySelectorAll(".vote-result").forEach(el => {
                 let player = el.dataset.player;
                 let percentage = totalVotes > 0 ? ((votes[player] || 0) / totalVotes * 100).toFixed(1) : 0;
-                el.textContent = `${percentage}%`;
+                gsap.to(el, { textContent: `${percentage}%`, duration: 1, snap: { textContent: 1 } });
             });
         }
     </script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+        }
+        .heisman-title {
+            font-family: 'Impact', sans-serif;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        .player-card {
+            border: 2px solid #FFD700;
+            box-shadow: 0 4px 10px rgba(255, 215, 0, 0.5);
+        }
+        .vote-button {
+            transition: transform 0.2s ease, background 0.3s ease;
+        }
+        .vote-button:hover {
+            transform: scale(1.1);
+            background: #FFD700;
+            color: #1e3c72;
+        }
+    </style>
 </head>
-<body class="bg-gray-900 text-white p-6">
-    <div class="max-w-4xl mx-auto">
-        <h1 class="text-3xl font-bold text-center mb-6">LCFA Heisman Race Voting</h1>
+<body class="text-white p-6">
+    <div class="max-w-4xl mx-auto text-center">
+        <h1 class="text-4xl font-bold heisman-title mb-6">LCFA Heisman Race Voting</h1>
         <div id="vote-section">
-            <div class="grid gap-4">
-                <div class="bg-gray-800 p-4 rounded-lg flex items-center" data-player="Player 1">
+            <div class="grid gap-6">
+                <div class="bg-gray-800 p-6 rounded-lg flex items-center player-card" data-player="Player 1">
                     <img src="player1.jpg" alt="Player 1" class="w-24 h-24 rounded-full mr-4">
                     <div class="flex-1">
                         <h2 class="text-xl font-bold">Player 1 - QB</h2>
                         <p>3500 YDS | 30 TDs | 5 INTs</p>
                     </div>
-                    <button onclick="vote('Player 1')" class="bg-blue-500 px-4 py-2 rounded">Vote</button>
-                    <p class="ml-4 vote-result" data-player="Player 1">0%</p>
+                    <button onclick="vote('Player 1')" class="vote-button bg-blue-500 px-4 py-2 rounded">Vote</button>
+                    <p class="ml-4 vote-result text-lg font-bold" data-player="Player 1">0%</p>
                 </div>
-                <div class="bg-gray-800 p-4 rounded-lg flex items-center" data-player="Player 2">
+                <div class="bg-gray-800 p-6 rounded-lg flex items-center player-card" data-player="Player 2">
                     <img src="player2.jpg" alt="Player 2" class="w-24 h-24 rounded-full mr-4">
                     <div class="flex-1">
                         <h2 class="text-xl font-bold">Player 2 - RB</h2>
                         <p>1800 YDS | 20 TDs | 6.2 AVG</p>
                     </div>
-                    <button onclick="vote('Player 2')" class="bg-blue-500 px-4 py-2 rounded">Vote</button>
-                    <p class="ml-4 vote-result" data-player="Player 2">0%</p>
+                    <button onclick="vote('Player 2')" class="vote-button bg-blue-500 px-4 py-2 rounded">Vote</button>
+                    <p class="ml-4 vote-result text-lg font-bold" data-player="Player 2">0%</p>
                 </div>
-                <div class="bg-gray-800 p-4 rounded-lg flex items-center" data-player="Player 3">
+                <div class="bg-gray-800 p-6 rounded-lg flex items-center player-card" data-player="Player 3">
                     <img src="player3.jpg" alt="Player 3" class="w-24 h-24 rounded-full mr-4">
                     <div class="flex-1">
                         <h2 class="text-xl font-bold">Player 3 - WR</h2>
                         <p>120 REC | 1600 YDS | 15 TDs</p>
                     </div>
-                    <button onclick="vote('Player 3')" class="bg-blue-500 px-4 py-2 rounded">Vote</button>
-                    <p class="ml-4 vote-result" data-player="Player 3">0%</p>
+                    <button onclick="vote('Player 3')" class="vote-button bg-blue-500 px-4 py-2 rounded">Vote</button>
+                    <p class="ml-4 vote-result text-lg font-bold" data-player="Player 3">0%</p>
                 </div>
-                <div class="bg-gray-800 p-4 rounded-lg flex items-center" data-player="Player 4">
+                <div class="bg-gray-800 p-6 rounded-lg flex items-center player-card" data-player="Player 4">
                     <img src="player4.jpg" alt="Player 4" class="w-24 h-24 rounded-full mr-4">
                     <div class="flex-1">
                         <h2 class="text-xl font-bold">Player 4 - LB</h2>
                         <p>120 TKL | 10 SACKS | 3 INTs</p>
                     </div>
-                    <button onclick="vote('Player 4')" class="bg-blue-500 px-4 py-2 rounded">Vote</button>
-                    <p class="ml-4 vote-result" data-player="Player 4">0%</p>
+                    <button onclick="vote('Player 4')" class="vote-button bg-blue-500 px-4 py-2 rounded">Vote</button>
+                    <p class="ml-4 vote-result text-lg font-bold" data-player="Player 4">0%</p>
                 </div>
-                <div class="bg-gray-800 p-4 rounded-lg flex items-center" data-player="Player 5">
+                <div class="bg-gray-800 p-6 rounded-lg flex items-center player-card" data-player="Player 5">
                     <img src="player5.jpg" alt="Player 5" class="w-24 h-24 rounded-full mr-4">
                     <div class="flex-1">
                         <h2 class="text-xl font-bold">Player 5 - CB</h2>
                         <p>50 TKL | 8 INTs | 2 TDs</p>
                     </div>
-                    <button onclick="vote('Player 5')" class="bg-blue-500 px-4 py-2 rounded">Vote</button>
-                    <p class="ml-4 vote-result" data-player="Player 5">0%</p>
+                    <button onclick="vote('Player 5')" class="vote-button bg-blue-500 px-4 py-2 rounded">Vote</button>
+                    <p class="ml-4 vote-result text-lg font-bold" data-player="Player 5">0%</p>
                 </div>
             </div>
         </div>
