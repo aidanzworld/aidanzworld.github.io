@@ -1,37 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Robux Parlays</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LCFA Heisman Race Voting</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            if (localStorage.getItem("voted")) {
+                document.getElementById("vote-section").innerHTML = "<p class='text-center text-lg font-bold'>You have already voted.</p>";
+            }
+        });
+        
+        function vote(player) {
+            if (localStorage.getItem("voted")) {
+                alert("You have already voted!");
+                return;
+            }
+            
+            let votes = JSON.parse(localStorage.getItem("votes")) || {};
+            votes[player] = (votes[player] || 0) + 1;
+            localStorage.setItem("votes", JSON.stringify(votes));
+            localStorage.setItem("voted", true);
+            updateResults();
+        }
+        
+        function updateResults() {
+            let votes = JSON.parse(localStorage.getItem("votes")) || {};
+            let totalVotes = Object.values(votes).reduce((a, b) => a + b, 0);
+            document.querySelectorAll(".vote-result").forEach(el => {
+                let player = el.dataset.player;
+                let percentage = totalVotes > 0 ? ((votes[player] || 0) / totalVotes * 100).toFixed(1) : 0;
+                el.textContent = `${percentage}%`;
+            });
+        }
+    </script>
 </head>
-<body>
-  <div class="container">
-    <h1>Place Your Parlays!</h1>
-    <div class="parlay-options">
-      <div class="parlay">
-        <h2>Game 1: Team A vs Team B</h2>
-        <p>Select Robux to Bet:</p>
-        <button onclick="redirect(25)">25 Robux</button>
-        <button onclick="redirect(50)">50 Robux</button>
-        <button onclick="redirect(100)">100 Robux</button>
-      </div>
+<body class="bg-gray-900 text-white p-6">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-center mb-6">LCFA Heisman Race Voting</h1>
+        <div id="vote-section">
+            <div class="grid gap-4">
+                <div class="bg-gray-800 p-4 rounded-lg flex items-center" data-player="Player 1">
+                    <img src="player1.jpg" alt="Player 1" class="w-24 h-24 rounded-full mr-4">
+                    <div class="flex-1">
+                        <h2 class="text-xl font-bold">Player 1 - QB</h2>
+                        <p>3500 YDS | 30 TDs | 5 INTs</p>
+                    </div>
+                    <button onclick="vote('Player 1')" class="bg-blue-500 px-4 py-2 rounded">Vote</button>
+                    <p class="ml-4 vote-result" data-player="Player 1">0%</p>
+                </div>
+                <div class="bg-gray-800 p-4 rounded-lg flex items-center" data-player="Player 2">
+                    <img src="player2.jpg" alt="Player 2" class="w-24 h-24 rounded-full mr-4">
+                    <div class="flex-1">
+                        <h2 class="text-xl font-bold">Player 2 - RB</h2>
+                        <p>1800 YDS | 20 TDs | 6.2 AVG</p>
+                    </div>
+                    <button onclick="vote('Player 2')" class="bg-blue-500 px-4 py-2 rounded">Vote</button>
+                    <p class="ml-4 vote-result" data-player="Player 2">0%</p>
+                </div>
+                <div class="bg-gray-800 p-4 rounded-lg flex items-center" data-player="Player 3">
+                    <img src="player3.jpg" alt="Player 3" class="w-24 h-24 rounded-full mr-4">
+                    <div class="flex-1">
+                        <h2 class="text-xl font-bold">Player 3 - WR</h2>
+                        <p>120 REC | 1600 YDS | 15 TDs</p>
+                    </div>
+                    <button onclick="vote('Player 3')" class="bg-blue-500 px-4 py-2 rounded">Vote</button>
+                    <p class="ml-4 vote-result" data-player="Player 3">0%</p>
+                </div>
+                <div class="bg-gray-800 p-4 rounded-lg flex items-center" data-player="Player 4">
+                    <img src="player4.jpg" alt="Player 4" class="w-24 h-24 rounded-full mr-4">
+                    <div class="flex-1">
+                        <h2 class="text-xl font-bold">Player 4 - LB</h2>
+                        <p>120 TKL | 10 SACKS | 3 INTs</p>
+                    </div>
+                    <button onclick="vote('Player 4')" class="bg-blue-500 px-4 py-2 rounded">Vote</button>
+                    <p class="ml-4 vote-result" data-player="Player 4">0%</p>
+                </div>
+                <div class="bg-gray-800 p-4 rounded-lg flex items-center" data-player="Player 5">
+                    <img src="player5.jpg" alt="Player 5" class="w-24 h-24 rounded-full mr-4">
+                    <div class="flex-1">
+                        <h2 class="text-xl font-bold">Player 5 - CB</h2>
+                        <p>50 TKL | 8 INTs | 2 TDs</p>
+                    </div>
+                    <button onclick="vote('Player 5')" class="bg-blue-500 px-4 py-2 rounded">Vote</button>
+                    <p class="ml-4 vote-result" data-player="Player 5">0%</p>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-
-  <script>
-    function redirect(amount) {
-      let link;
-      if(amount === 25) {
-        link = 'https://www.roblox.com/catalog/25RobuxShirt';
-      } else if(amount === 50) {
-        link = 'https://www.roblox.com/catalog/50RobuxShirt';
-      } else if(amount === 100) {
-        link = 'https://www.roblox.com/catalog/100RobuxShirt';
-      }
-      window.location.href = link;
-    }
-  </script>
 </body>
 </html>
