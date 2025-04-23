@@ -26,7 +26,7 @@ const getPlayoffTeams = () => {
       name: "Oilers",
       city: "Tennessee",
       conference: "AFC",
-      record: "5-4",
+      record: "5-5",
       logo: "/images/team-logos/OILERS.png",
     },
     {
