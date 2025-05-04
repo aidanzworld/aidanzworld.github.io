@@ -49,7 +49,7 @@ const getPlayoffTeams = () => {
       conference: "AFC",
       record: "3-7",
       logo: "/images/team-logos/DEN.png",
-      eliminated: false,
+      eliminated: true,
     },
   ]
 
@@ -93,7 +93,7 @@ const getPlayoffTeams = () => {
       conference: "NFC",
       record: "5-5",
       logo: "/images/team-logos/NO.png",
-      eliminated: false,
+      eliminated: true,
     },
   ]
 
@@ -525,13 +525,13 @@ export default function PlayoffsClientPage() {
                                 src={afcTeams[3].logo || "/placeholder.svg"}
                                 alt={`${afcTeams[3].city} logo`}
                                 fill
-                                className="object-contain"
+                                className="object-contain opacity-60"
                               />
                             </div>
-                            <span className="text-sm text-white">{afcTeams[3].city}</span>
+                            <span className="text-sm text-gray-400">{afcTeams[3].city}</span>
                           </div>
                         </div>
-                        <span className="text-sm font-bold text-yellow-400">?</span>
+                        <span className="text-sm font-bold text-gray-400">48</span>
                       </div>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center">
@@ -550,9 +550,9 @@ export default function PlayoffsClientPage() {
                             <span className="text-sm text-white">{afcTeams[2].city}</span>
                           </div>
                         </div>
-                        <span className="text-sm font-bold text-yellow-400">?</span>
+                        <span className="text-sm font-bold text-yellow-400">52</span>
                       </div>
-                      <div className="mt-2 text-xs text-center text-yellow-400 animate-pulse">Coming Soon</div>
+                      <div className="mt-2 text-xs text-center text-yellow-400">Tennessee advances to STC Bowl XII</div>
                     </CardContent>
                   </Card>
                 </div>
@@ -696,13 +696,13 @@ export default function PlayoffsClientPage() {
                                 src={nfcTeams[3].logo || "/placeholder.svg"}
                                 alt={`${nfcTeams[3].city} logo`}
                                 fill
-                                className="object-contain"
+                                className="object-contain opacity-60"
                               />
                             </div>
-                            <span className="text-sm text-white">{nfcTeams[3].city}</span>
+                            <span className="text-sm text-gray-400">{nfcTeams[3].city}</span>
                           </div>
                         </div>
-                        <span className="text-sm font-bold text-yellow-400">?</span>
+                        <span className="text-sm font-bold text-gray-400">43</span>
                       </div>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center">
@@ -721,9 +721,11 @@ export default function PlayoffsClientPage() {
                             <span className="text-sm text-white">{nfcTeams[1].city}</span>
                           </div>
                         </div>
-                        <span className="text-sm font-bold text-yellow-400">?</span>
+                        <span className="text-sm font-bold text-yellow-400">65</span>
                       </div>
-                      <div className="mt-2 text-xs text-center text-yellow-400 animate-pulse">Coming Soon</div>
+                      <div className="mt-2 text-xs text-center text-yellow-400">
+                        San Francisco advances to STC Bowl XII
+                      </div>
                     </CardContent>
                   </Card>
                 </div>
@@ -775,23 +777,37 @@ export default function PlayoffsClientPage() {
                     <div className="w-16 h-16 bg-gradient-to-r from-[#CE1126] to-[#CE1126]/70 rounded-full flex items-center justify-center text-white font-bold text-xl mb-2">
                       AFC
                     </div>
-                    <span className="text-xl font-medium text-gray-300">AFC Champion</span>
-                    <span className="text-sm text-yellow-400 mt-1">Denver or Tennessee</span>
+                    <span className="text-xl font-medium text-gray-300">Tennessee Oilers</span>
+                    <div className="w-20 h-20 relative mt-2">
+                      <Image
+                        src="/images/team-logos/OILERS.png"
+                        alt="Tennessee Oilers logo"
+                        fill
+                        className="object-contain"
+                      />
+                    </div>
                   </div>
 
                   <div className="text-center">
                     <div className="text-3xl font-bold mb-2">
                       <NeonText color="#ff2d55">VS</NeonText>
                     </div>
-                    <div className="text-sm text-gray-400">COMING SOON</div>
+                    <div className="text-sm text-yellow-400">MAY 10TH</div>
                   </div>
 
                   <div className="flex flex-col items-center">
                     <div className="w-16 h-16 bg-gradient-to-r from-[#003B66] to-[#003B66]/70 rounded-full flex items-center justify-center text-white font-bold text-xl mb-2">
                       NFC
                     </div>
-                    <span className="text-xl font-medium text-gray-300">NFC Champion</span>
-                    <span className="text-sm text-yellow-400 mt-1">New Orleans or San Francisco</span>
+                    <span className="text-xl font-medium text-gray-300">San Francisco 49ers</span>
+                    <div className="w-20 h-20 relative mt-2">
+                      <Image
+                        src="/images/team-logos/49ERS.png"
+                        alt="San Francisco 49ers logo"
+                        fill
+                        className="object-contain"
+                      />
+                    </div>
                   </div>
                 </div>
 
