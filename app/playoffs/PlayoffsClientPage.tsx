@@ -12,31 +12,34 @@ const getPlayoffTeams = () => {
   // AFC Teams (top 4)
   const afcTeams = [
     {
-   id: 1,
+      id: 1,
       seed: 1,
       name: "Chiefs",
       city: "Kansas City",
       conference: "AFC",
       record: "6-4",
       logo: "/images/team-logos/KAN.png",
+      eliminated: true,
     },
     {
-id: 2,
+      id: 2,
       seed: 2,
       name: "Dolphins",
       city: "Miami",
       conference: "AFC",
       record: "5-5",
       logo: "/images/team-logos/MIA.png",
+      eliminated: true,
     },
     {
-       id: 3,
+      id: 3,
       seed: 3,
       name: "Oilers",
       city: "Tennessee",
       conference: "AFC",
       record: "5-5",
       logo: "/images/team-logos/OILERS.png",
+      eliminated: false,
     },
     {
       id: 4,
@@ -46,6 +49,7 @@ id: 2,
       conference: "AFC",
       record: "3-7",
       logo: "/images/team-logos/DEN.png",
+      eliminated: false,
     },
   ]
 
@@ -59,6 +63,7 @@ id: 2,
       conference: "NFC",
       record: "10-0",
       logo: "/images/team-logos/CHI.png",
+      eliminated: true,
     },
     {
       id: 7,
@@ -68,6 +73,7 @@ id: 2,
       conference: "NFC",
       record: "7-3",
       logo: "/images/team-logos/49ERS.png",
+      eliminated: false,
     },
     {
       id: 8,
@@ -77,6 +83,7 @@ id: 2,
       conference: "NFC",
       record: "7-3",
       logo: "/images/team-logos/TB.png",
+      eliminated: true,
     },
     {
       id: 9,
@@ -86,6 +93,7 @@ id: 2,
       conference: "NFC",
       record: "5-5",
       logo: "/images/team-logos/NO.png",
+      eliminated: false,
     },
   ]
 
@@ -271,9 +279,9 @@ export default function PlayoffsClientPage() {
                     key={team.id}
                     className={`flex items-center p-4 border-b border-gray-800 last:border-b-0 ${
                       team.seed === 1 ? "bg-yellow-900/20" : ""
-                    }`}
+                    } ${team.eliminated ? "opacity-60" : ""}`}
                     initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
+                    animate={{ opacity: team.eliminated ? 0.6 : 1, x: 0 }}
                     transition={{ delay: 0.1 * index, duration: 0.3 }}
                   >
                     <div className="w-8 h-8 flex items-center justify-center bg-[#CE1126] text-white rounded-full mr-4">
@@ -293,6 +301,9 @@ export default function PlayoffsClientPage() {
                       </h3>
                       <p className="text-gray-400">{team.record}</p>
                     </div>
+                    {team.eliminated && (
+                      <span className="text-xs font-bold text-red-500 bg-red-500/10 px-2 py-1 rounded">ELIMINATED</span>
+                    )}
                   </motion.div>
                 ))}
               </CardContent>
@@ -319,9 +330,9 @@ export default function PlayoffsClientPage() {
                     key={team.id}
                     className={`flex items-center p-4 border-b border-gray-800 last:border-b-0 ${
                       team.seed === 1 ? "bg-yellow-900/20" : ""
-                    }`}
+                    } ${team.eliminated ? "opacity-60" : ""}`}
                     initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
+                    animate={{ opacity: team.eliminated ? 0.6 : 1, x: 0 }}
                     transition={{ delay: 0.1 * index, duration: 0.3 }}
                   >
                     <div className="w-8 h-8 flex items-center justify-center bg-[#003B66] text-white rounded-full mr-4">
@@ -341,6 +352,9 @@ export default function PlayoffsClientPage() {
                       </h3>
                       <p className="text-gray-400">{team.record}</p>
                     </div>
+                    {team.eliminated && (
+                      <span className="text-xs font-bold text-red-500 bg-red-500/10 px-2 py-1 rounded">ELIMINATED</span>
+                    )}
                   </motion.div>
                 ))}
               </CardContent>
@@ -402,13 +416,13 @@ export default function PlayoffsClientPage() {
                                     src={afcTeams[0].logo || "/placeholder.svg"}
                                     alt={`${afcTeams[0].city} logo`}
                                     fill
-                                    className="object-contain"
+                                    className="object-contain opacity-60"
                                   />
                                 </div>
-                                <span className="text-sm text-white">{afcTeams[0].city}</span>
+                                <span className="text-sm text-gray-400">{afcTeams[0].city}</span>
                               </div>
                             </div>
-                            <span className="text-sm font-bold text-yellow-400">?</span>
+                            <span className="text-sm font-bold text-gray-400">45</span>
                           </div>
                           <div className="flex items-center justify-between">
                             <div className="flex items-center">
@@ -427,8 +441,9 @@ export default function PlayoffsClientPage() {
                                 <span className="text-sm text-white">{afcTeams[3].city}</span>
                               </div>
                             </div>
-                            <span className="text-sm font-bold text-yellow-400">?</span>
+                            <span className="text-sm font-bold text-yellow-400">55</span>
                           </div>
+                          <div className="mt-2 text-xs text-center text-yellow-400">Denver advances</div>
                         </CardContent>
                       </Card>
                     </div>
@@ -453,13 +468,13 @@ export default function PlayoffsClientPage() {
                                     src={afcTeams[1].logo || "/placeholder.svg"}
                                     alt={`${afcTeams[1].city} logo`}
                                     fill
-                                    className="object-contain"
+                                    className="object-contain opacity-60"
                                   />
                                 </div>
-                                <span className="text-sm text-white">{afcTeams[1].city}</span>
+                                <span className="text-sm text-gray-400">{afcTeams[1].city}</span>
                               </div>
                             </div>
-                            <span className="text-sm font-bold text-yellow-400">?</span>
+                            <span className="text-sm font-bold text-gray-400">40</span>
                           </div>
                           <div className="flex items-center justify-between">
                             <div className="flex items-center">
@@ -478,8 +493,9 @@ export default function PlayoffsClientPage() {
                                 <span className="text-sm text-white">{afcTeams[2].city}</span>
                               </div>
                             </div>
-                            <span className="text-sm font-bold text-yellow-400">?</span>
+                            <span className="text-sm font-bold text-yellow-400">62</span>
                           </div>
+                          <div className="mt-2 text-xs text-center text-yellow-400">Tennessee advances</div>
                         </CardContent>
                       </Card>
                     </div>
@@ -500,22 +516,43 @@ export default function PlayoffsClientPage() {
                     <CardContent className="p-2">
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center">
-                          <span className="w-5 h-5 flex items-center justify-center bg-gray-700 text-gray-300 text-xs rounded-full mr-2">
-                            ?
+                          <span className="w-5 h-5 flex items-center justify-center bg-[#CE1126] text-white text-xs rounded-full mr-2">
+                            4
                           </span>
-                          <span className="text-sm text-gray-300">TBD</span>
+                          <div className="flex items-center">
+                            <div className="w-6 h-6 relative mr-1">
+                              <Image
+                                src={afcTeams[3].logo || "/placeholder.svg"}
+                                alt={`${afcTeams[3].city} logo`}
+                                fill
+                                className="object-contain"
+                              />
+                            </div>
+                            <span className="text-sm text-white">{afcTeams[3].city}</span>
+                          </div>
                         </div>
                         <span className="text-sm font-bold text-yellow-400">?</span>
                       </div>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center">
-                          <span className="w-5 h-5 flex items-center justify-center bg-gray-700 text-gray-300 text-xs rounded-full mr-2">
-                            ?
+                          <span className="w-5 h-5 flex items-center justify-center bg-[#CE1126] text-white text-xs rounded-full mr-2">
+                            3
                           </span>
-                          <span className="text-sm text-gray-300">TBD</span>
+                          <div className="flex items-center">
+                            <div className="w-6 h-6 relative mr-1">
+                              <Image
+                                src={afcTeams[2].logo || "/placeholder.svg"}
+                                alt={`${afcTeams[2].city} logo`}
+                                fill
+                                className="object-contain"
+                              />
+                            </div>
+                            <span className="text-sm text-white">{afcTeams[2].city}</span>
+                          </div>
                         </div>
                         <span className="text-sm font-bold text-yellow-400">?</span>
                       </div>
+                      <div className="mt-2 text-xs text-center text-yellow-400 animate-pulse">Coming Soon</div>
                     </CardContent>
                   </Card>
                 </div>
@@ -550,13 +587,13 @@ export default function PlayoffsClientPage() {
                                     src={nfcTeams[0].logo || "/placeholder.svg"}
                                     alt={`${nfcTeams[0].city} logo`}
                                     fill
-                                    className="object-contain"
+                                    className="object-contain opacity-60"
                                   />
                                 </div>
-                                <span className="text-sm text-white">{nfcTeams[0].city}</span>
+                                <span className="text-sm text-gray-400">{nfcTeams[0].city}</span>
                               </div>
                             </div>
-                            <span className="text-sm font-bold text-yellow-400">?</span>
+                            <span className="text-sm font-bold text-gray-400">49</span>
                           </div>
                           <div className="flex items-center justify-between">
                             <div className="flex items-center">
@@ -575,8 +612,9 @@ export default function PlayoffsClientPage() {
                                 <span className="text-sm text-white">{nfcTeams[3].city}</span>
                               </div>
                             </div>
-                            <span className="text-sm font-bold text-yellow-400">?</span>
+                            <span className="text-sm font-bold text-yellow-400">55</span>
                           </div>
+                          <div className="mt-2 text-xs text-center text-yellow-400">New Orleans advances</div>
                         </CardContent>
                       </Card>
                     </div>
@@ -607,7 +645,7 @@ export default function PlayoffsClientPage() {
                                 <span className="text-sm text-white">{nfcTeams[1].city}</span>
                               </div>
                             </div>
-                            <span className="text-sm font-bold text-yellow-400">?</span>
+                            <span className="text-sm font-bold text-yellow-400">60</span>
                           </div>
                           <div className="flex items-center justify-between">
                             <div className="flex items-center">
@@ -620,14 +658,15 @@ export default function PlayoffsClientPage() {
                                     src={nfcTeams[2].logo || "/placeholder.svg"}
                                     alt={`${nfcTeams[2].city} logo`}
                                     fill
-                                    className="object-contain"
+                                    className="object-contain opacity-60"
                                   />
                                 </div>
-                                <span className="text-sm text-white">{nfcTeams[2].city}</span>
+                                <span className="text-sm text-gray-400">{nfcTeams[2].city}</span>
                               </div>
                             </div>
-                            <span className="text-sm font-bold text-yellow-400">?</span>
+                            <span className="text-sm font-bold text-gray-400">56</span>
                           </div>
+                          <div className="mt-2 text-xs text-center text-yellow-400">San Francisco advances</div>
                         </CardContent>
                       </Card>
                     </div>
@@ -648,22 +687,43 @@ export default function PlayoffsClientPage() {
                     <CardContent className="p-2">
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center">
-                          <span className="w-5 h-5 flex items-center justify-center bg-gray-700 text-gray-300 text-xs rounded-full mr-2">
-                            ?
+                          <span className="w-5 h-5 flex items-center justify-center bg-[#003B66] text-white text-xs rounded-full mr-2">
+                            4
                           </span>
-                          <span className="text-sm text-gray-300">TBD</span>
+                          <div className="flex items-center">
+                            <div className="w-6 h-6 relative mr-1">
+                              <Image
+                                src={nfcTeams[3].logo || "/placeholder.svg"}
+                                alt={`${nfcTeams[3].city} logo`}
+                                fill
+                                className="object-contain"
+                              />
+                            </div>
+                            <span className="text-sm text-white">{nfcTeams[3].city}</span>
+                          </div>
                         </div>
                         <span className="text-sm font-bold text-yellow-400">?</span>
                       </div>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center">
-                          <span className="w-5 h-5 flex items-center justify-center bg-gray-700 text-gray-300 text-xs rounded-full mr-2">
-                            ?
+                          <span className="w-5 h-5 flex items-center justify-center bg-[#003B66] text-white text-xs rounded-full mr-2">
+                            2
                           </span>
-                          <span className="text-sm text-gray-300">TBD</span>
+                          <div className="flex items-center">
+                            <div className="w-6 h-6 relative mr-1">
+                              <Image
+                                src={nfcTeams[1].logo || "/placeholder.svg"}
+                                alt={`${nfcTeams[1].city} logo`}
+                                fill
+                                className="object-contain"
+                              />
+                            </div>
+                            <span className="text-sm text-white">{nfcTeams[1].city}</span>
+                          </div>
                         </div>
                         <span className="text-sm font-bold text-yellow-400">?</span>
                       </div>
+                      <div className="mt-2 text-xs text-center text-yellow-400 animate-pulse">Coming Soon</div>
                     </CardContent>
                   </Card>
                 </div>
@@ -716,6 +776,7 @@ export default function PlayoffsClientPage() {
                       AFC
                     </div>
                     <span className="text-xl font-medium text-gray-300">AFC Champion</span>
+                    <span className="text-sm text-yellow-400 mt-1">Denver or Tennessee</span>
                   </div>
 
                   <div className="text-center">
@@ -730,6 +791,7 @@ export default function PlayoffsClientPage() {
                       NFC
                     </div>
                     <span className="text-xl font-medium text-gray-300">NFC Champion</span>
+                    <span className="text-sm text-yellow-400 mt-1">New Orleans or San Francisco</span>
                   </div>
                 </div>
 
