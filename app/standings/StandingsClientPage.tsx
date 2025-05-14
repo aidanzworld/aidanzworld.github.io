@@ -4,110 +4,139 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
 import Image from "next/image"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
+// Team data for Season 13
 const teams = [
   // AFC Conference
+  // AFC West
   {
     id: 1,
-    name: "Oilers",
-    city: "Tennessee",
-    conference: "AFC",
-    division: "AFC",
-    logo: "/images/team-logos/OILERS.png",
-    wins: 5,
-    losses: 4,
-  },
-  {
-    id: 2,
-    name: "Chiefs",
-    city: "Kansas City",
-    conference: "AFC",
-    division: "AFC",
-    logo: "/images/team-logos/KAN.png",
-    wins: 5,
-    losses: 4,
-  },
-  {
-    id: 3,
-    name: "Dolphins",
-    city: "Miami",
-    conference: "AFC",
-    division: "AFC",
-    logo: "/images/team-logos/MIA.png",
-    wins: 4,
-    losses: 5,
-  },
-  {
-    id: 4,
     name: "Broncos",
     city: "Denver",
     conference: "AFC",
-    division: "AFC",
+    division: "West",
     logo: "/images/team-logos/DEN.png",
-    wins: 2,
-    losses: 7,
-  },
-  {
-    id: 5,
-    name: "Colts",
-    city: "Indianapolis",
-    conference: "AFC",
-    division: "AFC",
-    logo: "/images/team-logos/IND.png",
     wins: 0,
-    losses: 9,
-  },
-
-  // NFC Conference
-  {
-    id: 6,
-    name: "Bears",
-    city: "Chicago",
-    conference: "NFC",
-    division: "NFC",
-    logo: "/images/team-logos/CHI.png",
-    wins: 9,
     losses: 0,
   },
   {
+    id: 2,
+    name: "Raiders",
+    city: "Las Vegas",
+    conference: "AFC",
+    division: "West",
+    logo: "/images/team-logos/LV.png",
+    wins: 0,
+    losses: 0,
+  },
+  // AFC Central
+  {
+    id: 3,
+    name: "Chiefs",
+    city: "Kansas City",
+    conference: "AFC",
+    division: "Central",
+    logo: "/images/team-logos/KAN.png",
+    wins: 0,
+    losses: 0,
+  },
+  {
+    id: 4,
+    name: "Texans",
+    city: "Houston",
+    conference: "AFC",
+    division: "Central",
+    logo: "/images/team-logos/HOU.png",
+    wins: 0,
+    losses: 0,
+  },
+  // AFC North
+  {
+    id: 5,
+    name: "Ravens",
+    city: "Baltimore",
+    conference: "AFC",
+    division: "North",
+    logo: "/images/team-logos/BAL.png",
+    wins: 0,
+    losses: 0,
+  },
+  {
+    id: 6,
+    name: "Browns",
+    city: "Cleveland",
+    conference: "AFC",
+    division: "North",
+    logo: "/images/team-logos/CLE.png",
+    wins: 0,
+    losses: 0,
+  },
+
+  // NFC Conference
+  // NFC Central
+  {
     id: 7,
-    name: "49ers",
-    city: "San Francisco",
+    name: "Cardinals",
+    city: "Arizona",
     conference: "NFC",
-    division: "NFC",
-    logo: "/images/team-logos/49ERS.png",
-    wins: 7,
-    losses: 2,
+    division: "Central",
+    logo: "/images/team-logos/ARI.png",
+    wins: 0,
+    losses: 0,
   },
   {
     id: 8,
-    name: "Buccaneers",
-    city: "Tampa Bay",
+    name: "Lions",
+    city: "Detroit",
     conference: "NFC",
-    division: "NFC",
-    logo: "/images/team-logos/TB.png",
-    wins: 6,
-    losses: 3,
+    division: "Central",
+    logo: "/images/team-logos/DET.png",
+    wins: 0,
+    losses: 0,
   },
+  // NFC North
   {
     id: 9,
-    name: "Saints",
-    city: "New Orleans",
+    name: "Packers",
+    city: "Green Bay",
     conference: "NFC",
-    division: "NFC",
-    logo: "/images/team-logos/NO.png",
-    wins: 5,
-    losses: 4,
+    division: "North",
+    logo: "/images/team-logos/GB.png",
+    wins: 0,
+    losses: 0,
   },
   {
     id: 10,
-    name: "Falcons",
-    city: "Atlanta",
+    name: "Bears",
+    city: "Chicago",
     conference: "NFC",
-    division: "NFC",
-    logo: "/images/team-logos/ATL.png",
-    wins: 2,
-    losses: 6,
+    division: "North",
+    logo: "/images/team-logos/CHI.png",
+    wins: 0,
+    losses: 0,
+  },
+  // NFC East
+  {
+    id: 11,
+    name: "Panthers",
+    city: "Carolina",
+    conference: "NFC",
+    division: "East",
+    logo: "/images/team-logos/CAR.png",
+    wins: 0,
+    losses: 0,
+  },
+  {
+    id: 12,
+    name: "Buccaneers",
+    city: "Tampa Bay",
+    conference: "NFC",
+    division: "East",
+    logo: "/images/team-logos/TB.png",
+    wins: 0,
+    losses: 0,
   },
 ]
 
@@ -118,11 +147,31 @@ const calculateWinPercentage = (wins: number, losses: number) => {
   return (wins / total).toFixed(3).replace(/^0+/, "")
 }
 
-// Group teams by conference
+// Group teams by conference and division
 const groupTeamsByConference = () => {
   const grouped = {
-    AFC: teams.filter((team) => team.conference === "AFC").sort((a, b) => b.wins - a.wins || a.losses - b.losses),
-    NFC: teams.filter((team) => team.conference === "NFC").sort((a, b) => b.wins - a.wins || a.losses - b.losses),
+    AFC: {
+      West: teams
+        .filter((team) => team.conference === "AFC" && team.division === "West")
+        .sort((a, b) => b.wins - a.wins || a.losses - b.losses),
+      Central: teams
+        .filter((team) => team.conference === "AFC" && team.division === "Central")
+        .sort((a, b) => b.wins - a.wins || a.losses - b.losses),
+      North: teams
+        .filter((team) => team.conference === "AFC" && team.division === "North")
+        .sort((a, b) => b.wins - a.wins || a.losses - b.losses),
+    },
+    NFC: {
+      Central: teams
+        .filter((team) => team.conference === "NFC" && team.division === "Central")
+        .sort((a, b) => b.wins - a.wins || a.losses - b.losses),
+      North: teams
+        .filter((team) => team.conference === "NFC" && team.division === "North")
+        .sort((a, b) => b.wins - a.wins || a.losses - b.losses),
+      East: teams
+        .filter((team) => team.conference === "NFC" && team.division === "East")
+        .sort((a, b) => b.wins - a.wins || a.losses - b.losses),
+    },
   }
   return grouped
 }
@@ -153,14 +202,13 @@ const itemVariants = {
 
 export default function StandingsClientPage() {
   const [isClient, setIsClient] = useState(false)
+  const [activeTab, setActiveTab] = useState("AFC")
 
   useEffect(() => {
     setIsClient(true)
   }, [])
 
   const groupedTeams = groupTeamsByConference()
-  const afcStandings = groupedTeams.AFC
-  const nfcStandings = groupedTeams.NFC
 
   if (!isClient) {
     return null // Prevent SSR flash
@@ -174,108 +222,323 @@ export default function StandingsClientPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        STC SEASON 12 STANDINGS
+        STC SEASON 13 STANDINGS
       </motion.h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* AFC Conference */}
-        <motion.div initial="hidden" animate="visible" variants={containerVariants}>
-          <motion.h2 className="text-2xl font-bold mb-4 text-[#CE1126]" variants={itemVariants}>
-            AMERICAN FOOTBALL CONFERENCE
-          </motion.h2>
-          <motion.div variants={itemVariants}>
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-red-50">
-                  <TableHead>Team</TableHead>
-                  <TableHead className="text-center">W</TableHead>
-                  <TableHead className="text-center">L</TableHead>
-                  <TableHead className="text-center">PCT</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {afcStandings.map((team, index) => (
-                  <motion.tr
-                    key={team.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 + index * 0.05, duration: 0.3 }}
-                    className="border-b"
-                  >
-                    <TableCell>
-                      <div className="flex items-center">
-                        <div className="w-8 h-8 relative mr-2">
-                          <Image
-                            src={team.logo || "/placeholder.svg"}
-                            alt={`${team.name} logo`}
-                            fill
-                            className="object-contain"
-                          />
-                        </div>
-                        <span>
-                          {team.city} {team.name}
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-center">{team.wins}</TableCell>
-                    <TableCell className="text-center">{team.losses}</TableCell>
-                    <TableCell className="text-center">{calculateWinPercentage(team.wins, team.losses)}</TableCell>
-                  </motion.tr>
-                ))}
-              </TableBody>
-            </Table>
-          </motion.div>
+      <Tabs defaultValue="AFC" className="w-full" onValueChange={(value) => setActiveTab(value)}>
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
+          <TabsList className="grid w-full grid-cols-2 mb-8">
+            <TabsTrigger value="AFC" className="text-lg py-3">
+              AFC Conference
+            </TabsTrigger>
+            <TabsTrigger value="NFC" className="text-lg py-3">
+              NFC Conference
+            </TabsTrigger>
+          </TabsList>
         </motion.div>
 
-        {/* NFC Conference */}
-        <motion.div initial="hidden" animate="visible" variants={containerVariants}>
-          <motion.h2 className="text-2xl font-bold mb-4 text-[#003B66]" variants={itemVariants}>
-            NATIONAL FOOTBALL CONFERENCE
-          </motion.h2>
-          <motion.div variants={itemVariants}>
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-gray-50">
-                  <TableHead>Team</TableHead>
-                  <TableHead className="text-center">W</TableHead>
-                  <TableHead className="text-center">L</TableHead>
-                  <TableHead className="text-center">PCT</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {nfcStandings.map((team, index) => (
-                  <motion.tr
-                    key={team.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 + index * 0.05, duration: 0.3 }}
-                    className="border-b"
-                  >
-                    <TableCell>
-                      <div className="flex items-center">
-                        <div className="w-8 h-8 relative mr-2">
-                          <Image
-                            src={team.logo || "/placeholder.svg"}
-                            alt={`${team.name} logo`}
-                            fill
-                            className="object-contain"
-                          />
-                        </div>
-                        <span>
-                          {team.city} {team.name}
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-center">{team.wins}</TableCell>
-                    <TableCell className="text-center">{team.losses}</TableCell>
-                    <TableCell className="text-center">{calculateWinPercentage(team.wins, team.losses)}</TableCell>
-                  </motion.tr>
-                ))}
-              </TableBody>
-            </Table>
-          </motion.div>
-        </motion.div>
-      </div>
+        <TabsContent value="AFC">
+          <div className="space-y-8">
+            {/* AFC West */}
+            <Card>
+              <CardHeader className="bg-[#CE1126] text-white">
+                <CardTitle>AFC West Division</CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-red-50">
+                      <TableHead>Team</TableHead>
+                      <TableHead className="text-center">W</TableHead>
+                      <TableHead className="text-center">L</TableHead>
+                      <TableHead className="text-center">PCT</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {groupedTeams.AFC.West.map((team, index) => (
+                      <motion.tr
+                        key={team.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 + index * 0.05, duration: 0.3 }}
+                        className="border-b"
+                      >
+                        <TableCell>
+                          <div className="flex items-center">
+                            <div className="w-8 h-8 relative mr-2">
+                              <Image
+                                src={team.logo || "/placeholder.svg"}
+                                alt={`${team.name} logo`}
+                                fill
+                                className="object-contain"
+                              />
+                            </div>
+                            <span>
+                              {team.city} {team.name}
+                            </span>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-center">{team.wins}</TableCell>
+                        <TableCell className="text-center">{team.losses}</TableCell>
+                        <TableCell className="text-center">{calculateWinPercentage(team.wins, team.losses)}</TableCell>
+                      </motion.tr>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+
+            {/* AFC Central */}
+            <Card>
+              <CardHeader className="bg-[#CE1126] text-white">
+                <CardTitle>AFC Central Division</CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-red-50">
+                      <TableHead>Team</TableHead>
+                      <TableHead className="text-center">W</TableHead>
+                      <TableHead className="text-center">L</TableHead>
+                      <TableHead className="text-center">PCT</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {groupedTeams.AFC.Central.map((team, index) => (
+                      <motion.tr
+                        key={team.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 + index * 0.05, duration: 0.3 }}
+                        className="border-b"
+                      >
+                        <TableCell>
+                          <div className="flex items-center">
+                            <div className="w-8 h-8 relative mr-2">
+                              <Image
+                                src={team.logo || "/placeholder.svg"}
+                                alt={`${team.name} logo`}
+                                fill
+                                className="object-contain"
+                              />
+                            </div>
+                            <span>
+                              {team.city} {team.name}
+                            </span>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-center">{team.wins}</TableCell>
+                        <TableCell className="text-center">{team.losses}</TableCell>
+                        <TableCell className="text-center">{calculateWinPercentage(team.wins, team.losses)}</TableCell>
+                      </motion.tr>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+
+            {/* AFC North */}
+            <Card>
+              <CardHeader className="bg-[#CE1126] text-white">
+                <CardTitle>AFC North Division</CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-red-50">
+                      <TableHead>Team</TableHead>
+                      <TableHead className="text-center">W</TableHead>
+                      <TableHead className="text-center">L</TableHead>
+                      <TableHead className="text-center">PCT</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {groupedTeams.AFC.North.map((team, index) => (
+                      <motion.tr
+                        key={team.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 + index * 0.05, duration: 0.3 }}
+                        className="border-b"
+                      >
+                        <TableCell>
+                          <div className="flex items-center">
+                            <div className="w-8 h-8 relative mr-2">
+                              <Image
+                                src={team.logo || "/placeholder.svg"}
+                                alt={`${team.name} logo`}
+                                fill
+                                className="object-contain"
+                              />
+                            </div>
+                            <span>
+                              {team.city} {team.name}
+                            </span>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-center">{team.wins}</TableCell>
+                        <TableCell className="text-center">{team.losses}</TableCell>
+                        <TableCell className="text-center">{calculateWinPercentage(team.wins, team.losses)}</TableCell>
+                      </motion.tr>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="NFC">
+          <div className="space-y-8">
+            {/* NFC Central */}
+            <Card>
+              <CardHeader className="bg-[#003B66] text-white">
+                <CardTitle>NFC Central Division</CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-gray-50">
+                      <TableHead>Team</TableHead>
+                      <TableHead className="text-center">W</TableHead>
+                      <TableHead className="text-center">L</TableHead>
+                      <TableHead className="text-center">PCT</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {groupedTeams.NFC.Central.map((team, index) => (
+                      <motion.tr
+                        key={team.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 + index * 0.05, duration: 0.3 }}
+                        className="border-b"
+                      >
+                        <TableCell>
+                          <div className="flex items-center">
+                            <div className="w-8 h-8 relative mr-2">
+                              <Image
+                                src={team.logo || "/placeholder.svg"}
+                                alt={`${team.name} logo`}
+                                fill
+                                className="object-contain"
+                              />
+                            </div>
+                            <span>
+                              {team.city} {team.name}
+                            </span>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-center">{team.wins}</TableCell>
+                        <TableCell className="text-center">{team.losses}</TableCell>
+                        <TableCell className="text-center">{calculateWinPercentage(team.wins, team.losses)}</TableCell>
+                      </motion.tr>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+
+            {/* NFC North */}
+            <Card>
+              <CardHeader className="bg-[#003B66] text-white">
+                <CardTitle>NFC North Division</CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-gray-50">
+                      <TableHead>Team</TableHead>
+                      <TableHead className="text-center">W</TableHead>
+                      <TableHead className="text-center">L</TableHead>
+                      <TableHead className="text-center">PCT</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {groupedTeams.NFC.North.map((team, index) => (
+                      <motion.tr
+                        key={team.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 + index * 0.05, duration: 0.3 }}
+                        className="border-b"
+                      >
+                        <TableCell>
+                          <div className="flex items-center">
+                            <div className="w-8 h-8 relative mr-2">
+                              <Image
+                                src={team.logo || "/placeholder.svg"}
+                                alt={`${team.name} logo`}
+                                fill
+                                className="object-contain"
+                              />
+                            </div>
+                            <span>
+                              {team.city} {team.name}
+                            </span>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-center">{team.wins}</TableCell>
+                        <TableCell className="text-center">{team.losses}</TableCell>
+                        <TableCell className="text-center">{calculateWinPercentage(team.wins, team.losses)}</TableCell>
+                      </motion.tr>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+
+            {/* NFC East */}
+            <Card>
+              <CardHeader className="bg-[#003B66] text-white">
+                <CardTitle>NFC East Division</CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-gray-50">
+                      <TableHead>Team</TableHead>
+                      <TableHead className="text-center">W</TableHead>
+                      <TableHead className="text-center">L</TableHead>
+                      <TableHead className="text-center">PCT</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {groupedTeams.NFC.East.map((team, index) => (
+                      <motion.tr
+                        key={team.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 + index * 0.05, duration: 0.3 }}
+                        className="border-b"
+                      >
+                        <TableCell>
+                          <div className="flex items-center">
+                            <div className="w-8 h-8 relative mr-2">
+                              <Image
+                                src={team.logo || "/placeholder.svg"}
+                                alt={`${team.name} logo`}
+                                fill
+                                className="object-contain"
+                              />
+                            </div>
+                            <span>
+                              {team.city} {team.name}
+                            </span>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-center">{team.wins}</TableCell>
+                        <TableCell className="text-center">{team.losses}</TableCell>
+                        <TableCell className="text-center">{calculateWinPercentage(team.wins, team.losses)}</TableCell>
+                      </motion.tr>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }

@@ -7,7 +7,6 @@ import Image from "next/image"
 import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
 import { getLatestNews } from "@/lib/news-data"
-import { PlayoffsPromoBar } from "@/components/playoffs-promo-bar"
 
 // Animation variants
 const containerVariants = {
@@ -49,8 +48,6 @@ export default function HomePageClient() {
 
   return (
     <>
-      <PlayoffsPromoBar />
-
       {/* Hero Section */}
       <motion.section
         className="bg-gradient-to-r from-[#CE1126] to-[#CE1126] text-white py-16"
@@ -73,7 +70,7 @@ export default function HomePageClient() {
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.5 }}
           >
-            Season 12 - The premier football experience on Roblox
+            Season 13 - The premier football experience on Roblox
           </motion.p>
           <motion.div
             className="flex flex-wrap justify-center gap-4"
@@ -86,7 +83,7 @@ export default function HomePageClient() {
             </Button>
             <Button variant="outline" className="border-white text-black hover:bg-white hover:text-[#CE1126]">
               <Link href="/playoffs" className="text-black hover:text-[#CE1126]">
-                Playoff Picture
+                Playoffs Coming Soon
               </Link>
             </Button>
           </motion.div>
@@ -115,8 +112,10 @@ export default function HomePageClient() {
                 <Trophy className="h-20 w-20 text-yellow-400" />
               </div>
               <div className="p-6">
-                <h3 className="text-xl font-bold mb-2 text-black">Playoff Picture</h3>
-                <p className="text-gray-700 mb-4">Check out the remaining teams and their path to the STC Bowl.</p>
+                <h3 className="text-xl font-bold mb-2 text-black">Playoffs Coming Soon</h3>
+                <p className="text-gray-700 mb-4">
+                  Stay tuned for the Season 13 playoff picture as the season progresses.
+                </p>
                 <Button
                   variant="outline"
                   className="w-full border-[#CE1126] text-[#CE1126] hover:bg-[#CE1126] hover:text-white"
@@ -173,7 +172,7 @@ export default function HomePageClient() {
             Quick Links
           </motion.h2>
           <motion.div
-            className="grid grid-cols-2 md:grid-cols-4 gap-4"
+            className="grid grid-cols-2 md:grid-cols-5 gap-4"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
@@ -215,6 +214,15 @@ export default function HomePageClient() {
               >
                 <Trophy className="h-10 w-10 mx-auto mb-2" />
                 <span className="font-bold">Playoffs</span>
+              </Link>
+            </motion.div>
+            <motion.div variants={itemVariants}>
+              <Link
+                href="/schedule"
+                className="bg-blue-600 text-white p-6 rounded-lg text-center hover:bg-blue-700 transition duration-200 block"
+              >
+                <BarChart3 className="h-10 w-10 mx-auto mb-2" />
+                <span className="font-bold">Schedule</span>
               </Link>
             </motion.div>
           </motion.div>

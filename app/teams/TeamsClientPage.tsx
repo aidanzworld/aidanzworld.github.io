@@ -6,118 +6,152 @@ import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
 import { useState, useEffect } from "react"
 
-// Team data
+// Team data for Season 13
 const teams = [
   // AFC Conference
+  // AFC West
   {
     id: 1,
-    name: "Oilers",
-    city: "Tennessee",
-    conference: "AFC",
-    division: "AFC",
-    logo: "/images/team-logos/OILERS.png",
-    wins: 5,
-    losses: 4,
-  },
-  {
-    id: 2,
-    name: "Chiefs",
-    city: "Kansas City",
-    conference: "AFC",
-    division: "AFC",
-    logo: "/images/team-logos/KAN.png",
-    wins: 5,
-    losses: 4,
-  },
-  {
-    id: 3,
-    name: "Dolphins",
-    city: "Miami",
-    conference: "AFC",
-    division: "AFC",
-    logo: "/images/team-logos/MIA.png",
-    wins: 4,
-    losses: 5,
-  },
-  {
-    id: 4,
     name: "Broncos",
     city: "Denver",
     conference: "AFC",
-    division: "AFC",
+    division: "West",
     logo: "/images/team-logos/DEN.png",
-    wins: 2,
-    losses: 7,
-  },
-  {
-    id: 5,
-    name: "Colts",
-    city: "Indianapolis",
-    conference: "AFC",
-    division: "AFC",
-    logo: "/images/team-logos/IND.png",
     wins: 0,
-    losses: 9,
-  },
-
-  // NFC Conference
-  {
-    id: 6,
-    name: "Bears",
-    city: "Chicago",
-    conference: "NFC",
-    division: "NFC",
-    logo: "/images/team-logos/CHI.png",
-    wins: 9,
     losses: 0,
   },
   {
+    id: 2,
+    name: "Raiders",
+    city: "Las Vegas",
+    conference: "AFC",
+    division: "West",
+    logo: "/images/team-logos/LV.png",
+    wins: 0,
+    losses: 0,
+  },
+  // AFC Central
+  {
+    id: 3,
+    name: "Chiefs",
+    city: "Kansas City",
+    conference: "AFC",
+    division: "Central",
+    logo: "/images/team-logos/KAN.png",
+    wins: 0,
+    losses: 0,
+  },
+  {
+    id: 4,
+    name: "Texans",
+    city: "Houston",
+    conference: "AFC",
+    division: "Central",
+    logo: "/images/team-logos/HOU.png",
+    wins: 0,
+    losses: 0,
+  },
+  // AFC North
+  {
+    id: 5,
+    name: "Ravens",
+    city: "Baltimore",
+    conference: "AFC",
+    division: "North",
+    logo: "/images/team-logos/BAL.png",
+    wins: 0,
+    losses: 0,
+  },
+  {
+    id: 6,
+    name: "Browns",
+    city: "Cleveland",
+    conference: "AFC",
+    division: "North",
+    logo: "/images/team-logos/CLE.png",
+    wins: 0,
+    losses: 0,
+  },
+
+  // NFC Conference
+  // NFC Central
+  {
     id: 7,
-    name: "49ers",
-    city: "San Francisco",
+    name: "Cardinals",
+    city: "Arizona",
     conference: "NFC",
-    division: "NFC",
-    logo: "/images/team-logos/49ERS.png",
-    wins: 7,
-    losses: 2,
+    division: "Central",
+    logo: "/images/team-logos/ARI.png",
+    wins: 0,
+    losses: 0,
   },
   {
     id: 8,
-    name: "Buccaneers",
-    city: "Tampa Bay",
+    name: "Lions",
+    city: "Detroit",
     conference: "NFC",
-    division: "NFC",
-    logo: "/images/team-logos/TB.png",
-    wins: 6,
-    losses: 3,
+    division: "Central",
+    logo: "/images/team-logos/DET.png",
+    wins: 0,
+    losses: 0,
   },
+  // NFC North
   {
     id: 9,
-    name: "Saints",
-    city: "New Orleans",
+    name: "Packers",
+    city: "Green Bay",
     conference: "NFC",
-    division: "NFC",
-    logo: "/images/team-logos/NO.png",
-    wins: 5,
-    losses: 3,
+    division: "North",
+    logo: "/images/team-logos/GB.png",
+    wins: 0,
+    losses: 0,
   },
   {
     id: 10,
-    name: "Falcons",
-    city: "Atlanta",
+    name: "Bears",
+    city: "Chicago",
     conference: "NFC",
-    division: "NFC",
-    logo: "/images/team-logos/ATL.png",
-    wins: 2,
-    losses: 6,
+    division: "North",
+    logo: "/images/team-logos/CHI.png",
+    wins: 0,
+    losses: 0,
+  },
+  // NFC East
+  {
+    id: 11,
+    name: "Panthers",
+    city: "Carolina",
+    conference: "NFC",
+    division: "East",
+    logo: "/images/team-logos/CAR.png",
+    wins: 0,
+    losses: 0,
+  },
+  {
+    id: 12,
+    name: "Buccaneers",
+    city: "Tampa Bay",
+    conference: "NFC",
+    division: "East",
+    logo: "/images/team-logos/TB.png",
+    wins: 0,
+    losses: 0,
   },
 ]
 
-// Group teams by conference
+// Group teams by conference and division
 const groupTeamsByConference = () => {
   const grouped = {
-    AFC: teams.filter((team) => team.conference === "AFC").sort((a, b) => b.wins - a.wins || a.losses - b.losses),
-    NFC: teams.filter((team) => team.conference === "NFC").sort((a, b) => b.wins - a.wins || a.losses - b.losses),
+    AFC: {
+      West: teams.filter((team) => team.conference === "AFC" && team.division === "West"),
+      Central: teams.filter((team) => team.conference === "AFC" && team.division === "Central"),
+      North: teams.filter((team) => team.conference === "AFC" && team.division === "North"),
+    },
+    NFC: {
+      Central: teams.filter((team) => team.conference === "NFC" && team.division === "Central"),
+      North: teams.filter((team) => team.conference === "NFC" && team.division === "North"),
+      East: teams.filter((team) => team.conference === "NFC" && team.division === "East"),
+    },
   }
   return grouped
 }
@@ -168,7 +202,7 @@ export default function TeamsClientPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        Teams
+        STC Season 13 Teams
       </motion.h1>
 
       <Tabs defaultValue="AFC" className="w-full" onValueChange={(value) => setActiveTab(value)}>
@@ -191,14 +225,82 @@ export default function TeamsClientPage() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.3 }}
+              className="space-y-8"
             >
+              {/* AFC West */}
               <Card className="overflow-hidden">
                 <CardHeader className="bg-[#CE1126] text-white">
-                  <CardTitle>American Football Conference</CardTitle>
+                  <CardTitle>AFC West Division</CardTitle>
                 </CardHeader>
                 <CardContent className="p-0">
                   <motion.div initial="hidden" animate="visible" variants={containerVariants}>
-                    {groupedTeams.AFC.map((team, index) => (
+                    {groupedTeams.AFC.West.map((team, index) => (
+                      <motion.div key={team.id} variants={itemVariants} custom={index}>
+                        <div className="flex items-center p-4 border-b last:border-b-0">
+                          <div className="w-12 h-12 relative mr-4">
+                            <Image
+                              src={team.logo || "/placeholder.svg"}
+                              alt={`${team.city} ${team.name} logo`}
+                              fill
+                              className="object-contain"
+                            />
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="font-bold text-lg">
+                              {team.city} {team.name}
+                            </h3>
+                            <p className="text-gray-600">
+                              {team.wins}-{team.losses}
+                            </p>
+                          </div>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                </CardContent>
+              </Card>
+
+              {/* AFC Central */}
+              <Card className="overflow-hidden">
+                <CardHeader className="bg-[#CE1126] text-white">
+                  <CardTitle>AFC Central Division</CardTitle>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <motion.div initial="hidden" animate="visible" variants={containerVariants}>
+                    {groupedTeams.AFC.Central.map((team, index) => (
+                      <motion.div key={team.id} variants={itemVariants} custom={index}>
+                        <div className="flex items-center p-4 border-b last:border-b-0">
+                          <div className="w-12 h-12 relative mr-4">
+                            <Image
+                              src={team.logo || "/placeholder.svg"}
+                              alt={`${team.city} ${team.name} logo`}
+                              fill
+                              className="object-contain"
+                            />
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="font-bold text-lg">
+                              {team.city} {team.name}
+                            </h3>
+                            <p className="text-gray-600">
+                              {team.wins}-{team.losses}
+                            </p>
+                          </div>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                </CardContent>
+              </Card>
+
+              {/* AFC North */}
+              <Card className="overflow-hidden">
+                <CardHeader className="bg-[#CE1126] text-white">
+                  <CardTitle>AFC North Division</CardTitle>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <motion.div initial="hidden" animate="visible" variants={containerVariants}>
+                    {groupedTeams.AFC.North.map((team, index) => (
                       <motion.div key={team.id} variants={itemVariants} custom={index}>
                         <div className="flex items-center p-4 border-b last:border-b-0">
                           <div className="w-12 h-12 relative mr-4">
@@ -233,14 +335,82 @@ export default function TeamsClientPage() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.3 }}
+              className="space-y-8"
             >
+              {/* NFC Central */}
               <Card className="overflow-hidden">
                 <CardHeader className="bg-[#003B66] text-white">
-                  <CardTitle>National Football Conference</CardTitle>
+                  <CardTitle>NFC Central Division</CardTitle>
                 </CardHeader>
                 <CardContent className="p-0">
                   <motion.div initial="hidden" animate="visible" variants={containerVariants}>
-                    {groupedTeams.NFC.map((team, index) => (
+                    {groupedTeams.NFC.Central.map((team, index) => (
+                      <motion.div key={team.id} variants={itemVariants} custom={index}>
+                        <div className="flex items-center p-4 border-b last:border-b-0">
+                          <div className="w-12 h-12 relative mr-4">
+                            <Image
+                              src={team.logo || "/placeholder.svg"}
+                              alt={`${team.city} ${team.name} logo`}
+                              fill
+                              className="object-contain"
+                            />
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="font-bold text-lg">
+                              {team.city} {team.name}
+                            </h3>
+                            <p className="text-gray-600">
+                              {team.wins}-{team.losses}
+                            </p>
+                          </div>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                </CardContent>
+              </Card>
+
+              {/* NFC North */}
+              <Card className="overflow-hidden">
+                <CardHeader className="bg-[#003B66] text-white">
+                  <CardTitle>NFC North Division</CardTitle>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <motion.div initial="hidden" animate="visible" variants={containerVariants}>
+                    {groupedTeams.NFC.North.map((team, index) => (
+                      <motion.div key={team.id} variants={itemVariants} custom={index}>
+                        <div className="flex items-center p-4 border-b last:border-b-0">
+                          <div className="w-12 h-12 relative mr-4">
+                            <Image
+                              src={team.logo || "/placeholder.svg"}
+                              alt={`${team.city} ${team.name} logo`}
+                              fill
+                              className="object-contain"
+                            />
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="font-bold text-lg">
+                              {team.city} {team.name}
+                            </h3>
+                            <p className="text-gray-600">
+                              {team.wins}-{team.losses}
+                            </p>
+                          </div>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                </CardContent>
+              </Card>
+
+              {/* NFC East */}
+              <Card className="overflow-hidden">
+                <CardHeader className="bg-[#003B66] text-white">
+                  <CardTitle>NFC East Division</CardTitle>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <motion.div initial="hidden" animate="visible" variants={containerVariants}>
+                    {groupedTeams.NFC.East.map((team, index) => (
                       <motion.div key={team.id} variants={itemVariants} custom={index}>
                         <div className="flex items-center p-4 border-b last:border-b-0">
                           <div className="w-12 h-12 relative mr-4">

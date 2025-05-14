@@ -156,7 +156,7 @@ export async function generateOgImage(
           fontSize: "24px",
         }}
       >
-        Season 12 - The premier football league experience on Roblox
+        Season 13 - The premier football league experience on Roblox
       </div>
     </div>,
     {

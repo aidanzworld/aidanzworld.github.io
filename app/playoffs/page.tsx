@@ -2,18 +2,18 @@ import PlayoffsClientPage from "./PlayoffsClientPage"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Road to Vegas: STC Playoffs | Sports Talk Club",
-  description: "Follow the playoff journey to STC Bowl XII at Allegiant Stadium in Las Vegas, Nevada",
+  title: "Playoffs Coming Soon | Sports Talk Club",
+  description: "The Season 13 playoff picture will be available as the season progresses",
   openGraph: {
-    title: "Road to Vegas: STC Playoffs",
-    description: "Follow the playoff journey to STC Bowl XII at Allegiant Stadium in Las Vegas, Nevada",
-    images: ["/images/playoffs-vegas.png"],
+    title: "STC Season 13 Playoffs - Coming Soon",
+    description: "The Season 13 playoff picture will be available as the season progresses",
+    images: ["/api/og?title=Playoffs&subtitle=Coming%20Soon&bg=%23a855f7&text=white"],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Road to Vegas: STC Playoffs",
-    description: "Follow the playoff journey to STC Bowl XII at Allegiant Stadium in Las Vegas, Nevada",
-    images: ["/images/playoffs-vegas.png"],
+    title: "STC Season 13 Playoffs - Coming Soon",
+    description: "The Season 13 playoff picture will be available as the season progresses",
+    images: ["/api/og?title=Playoffs&subtitle=Coming%20Soon&bg=%23a855f7&text=white"],
   },
 }
 

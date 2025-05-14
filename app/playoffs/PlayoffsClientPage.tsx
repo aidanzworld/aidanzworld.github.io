@@ -1,11 +1,11 @@
 "use client"
-
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import Image from "next/image"
 import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
-import { Sparkles, Trophy, Dice1Icon as Dice, ChevronRight } from "lucide-react"
+import { Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import Link from "next/link"
+import { NeonText } from "@/components/neon-text"
 
 // Get playoff teams based on standings
 const getPlayoffTeams = () => {
@@ -126,17 +126,17 @@ const itemVariants = {
 }
 
 // Neon text effect component
-const NeonText = ({ children, color = "#ff00ff", className = "" }) => (
-  <span
-    className={`font-bold ${className}`}
-    style={{
-      color: color,
-      textShadow: `0 0 5px ${color}, 0 0 10px ${color}, 0 0 20px ${color}, 0 0 30px ${color}`,
-    }}
-  >
-    {children}
-  </span>
-)
+// const NeonText = ({ children, color = "#ff00ff", className = "" }) => (
+//   <span
+//     className={`font-bold ${className}`}
+//     style={{
+//       color: color,
+//       textShadow: `0 0 5px ${color}, 0 0 10px ${color}, 0 0 20px ${color}, 0 0 30px ${color}`,
+//     }}
+//   >
+//     {children}
+//   </span>
+// )
 
 export default function PlayoffsClientPage() {
   const [isClient, setIsClient] = useState(false)
@@ -145,7 +145,7 @@ export default function PlayoffsClientPage() {
     setIsClient(true)
   }, [])
 
-  const { afcTeams, nfcTeams } = getPlayoffTeams()
+  // const { afcTeams, nfcTeams } = getPlayoffTeams()
 
   if (!isClient) {
     return null // Prevent SSR flash
@@ -201,7 +201,7 @@ export default function PlayoffsClientPage() {
         <div className="container mx-auto px-4 py-16 relative z-10">
           <div className="flex flex-col items-center justify-center">
             {/* Playoffs Logo */}
-            <div className="w-full max-w-md mb-8">
+            {/* <div className="w-full max-w-md mb-8">
               <Image
                 src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/STCP-v2UsZ3RdXpcL0mmMT7CQYAI6ZtTWJq.png"
                 alt="STC Playoffs"
@@ -209,7 +209,7 @@ export default function PlayoffsClientPage() {
                 height={150}
                 className="w-full h-auto"
               />
-            </div>
+            </div> */}
 
             <motion.h1
               className="text-4xl md:text-6xl font-extrabold mb-4 text-center"
@@ -217,7 +217,7 @@ export default function PlayoffsClientPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <NeonText color="#ff2d55">ROAD TO VEGAS</NeonText>
+              <NeonText color="#ff2d55">SEASON 13 PLAYOFFS</NeonText>
             </motion.h1>
 
             <motion.div
@@ -227,12 +227,12 @@ export default function PlayoffsClientPage() {
               transition={{ delay: 0.3, duration: 0.5 }}
             >
               <Sparkles className="h-6 w-6 text-yellow-400 mr-2" />
-              <span className="text-xl text-yellow-400">STC BOWL XII • ALLEGIANT STADIUM • LAS VEGAS</span>
+              <span className="text-xl text-yellow-400">COMING SOON</span>
               <Sparkles className="h-6 w-6 text-yellow-400 ml-2" />
             </motion.div>
 
             {/* Vegas-themed STC Bowl Logo */}
-            <motion.div
+            {/* <motion.div
               className="w-full max-w-md mb-8"
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -245,7 +245,7 @@ export default function PlayoffsClientPage() {
                 height={400}
                 className="w-full h-auto"
               />
-            </motion.div>
+            </motion.div> */}
           </div>
         </div>
       </div>
@@ -253,14 +253,14 @@ export default function PlayoffsClientPage() {
       {/* Main content */}
       <div className="container mx-auto px-4 py-8">
         {/* Conference Sections */}
-        <motion.div
+        {/* <motion.div
           className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12"
           initial="hidden"
           animate="visible"
           variants={containerVariants}
-        >
-          {/* AFC Playoff Picture */}
-          <motion.div variants={itemVariants} className="relative">
+        > */}
+        {/* AFC Playoff Picture */}
+        {/* <motion.div variants={itemVariants} className="relative">
             <div className="absolute inset-0 bg-gradient-to-r from-[#CE1126]/20 to-transparent rounded-lg -m-1"></div>
             <h2 className="text-2xl font-bold mb-6 text-center">
               <NeonText color="#CE1126">AFC PLAYOFF PICTURE</NeonText>
@@ -308,10 +308,10 @@ export default function PlayoffsClientPage() {
                 ))}
               </CardContent>
             </Card>
-          </motion.div>
+          </motion.div> */}
 
-          {/* NFC Playoff Picture */}
-          <motion.div variants={itemVariants} className="relative">
+        {/* NFC Playoff Picture */}
+        {/* <motion.div variants={itemVariants} className="relative">
             <div className="absolute inset-0 bg-gradient-to-r from-[#003B66]/20 to-transparent rounded-lg -m-1"></div>
             <h2 className="text-2xl font-bold mb-6 text-center">
               <NeonText color="#003B66">NFC PLAYOFF PICTURE</NeonText>
@@ -360,10 +360,10 @@ export default function PlayoffsClientPage() {
               </CardContent>
             </Card>
           </motion.div>
-        </motion.div>
+        </motion.div> */}
 
         {/* Playoff Bracket - with Vegas theme */}
-        <motion.h2
+        {/* <motion.h2
           className="text-3xl font-bold mb-8 text-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -372,31 +372,31 @@ export default function PlayoffsClientPage() {
           <NeonText color="#eab308" className="text-3xl md:text-4xl">
             THE PLAYOFF BRACKET
           </NeonText>
-        </motion.h2>
+        </motion.h2> */}
 
         {/* Bracket visualization with neon styling */}
-        <div className="relative">
-          {/* Decorative casino-themed elements */}
-          <div className="absolute -top-10 -left-10 text-6xl opacity-10 text-red-500">♦</div>
+        {/* <div className="relative"> */}
+        {/* Decorative casino-themed elements */}
+        {/* <div className="absolute -top-10 -left-10 text-6xl opacity-10 text-red-500">♦</div>
           <div className="absolute -bottom-10 -right-10 text-6xl opacity-10 text-red-500">♥</div>
           <div className="absolute -top-10 -right-10 text-6xl opacity-10 text-black">♠</div>
-          <div className="absolute -bottom-10 -left-10 text-6xl opacity-10 text-black">♣</div>
+          <div className="absolute -bottom-10 -left-10 text-6xl opacity-10 text-black">♣</div> */}
 
-          <motion.div
+        {/* <motion.div
             className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.5 }}
-          >
-            {/* AFC Bracket */}
-            <div className="relative">
+          > */}
+        {/* AFC Bracket */}
+        {/* <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-b from-[#CE1126]/10 to-transparent rounded-lg -m-1"></div>
               <h3 className="text-xl font-bold mb-4 text-center">
                 <NeonText color="#CE1126">AFC BRACKET</NeonText>
               </h3>
-              <div className="relative">
-                {/* Semi-Finals */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+              <div className="relative"> */}
+        {/* Semi-Finals */}
+        {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
                   <div className="col-span-1">
                     <h4 className="text-sm font-semibold mb-2 text-center text-gray-300">Semi-Finals</h4>
                     <div className="space-y-4">
@@ -500,10 +500,10 @@ export default function PlayoffsClientPage() {
                       </Card>
                     </div>
                   </div>
-                </div>
+                </div> */}
 
-                {/* AFC Championship */}
-                <div className="max-w-md mx-auto">
+        {/* AFC Championship */}
+        {/* <div className="max-w-md mx-auto">
                   <h4 className="text-sm font-semibold mb-2 text-center text-gray-300">AFC Championship</h4>
                   <Card className="overflow-hidden border-[#CE1126]/50 bg-black/70">
                     <CardHeader className="bg-gradient-to-r from-[#CE1126] to-[#CE1126]/70 text-white p-2">
@@ -557,17 +557,17 @@ export default function PlayoffsClientPage() {
                   </Card>
                 </div>
               </div>
-            </div>
+            </div> */}
 
-            {/* NFC Bracket */}
-            <div className="relative">
+        {/* NFC Bracket */}
+        {/* <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-b from-[#003B66]/10 to-transparent rounded-lg -m-1"></div>
               <h3 className="text-xl font-bold mb-4 text-center">
                 <NeonText color="#003B66">NFC BRACKET</NeonText>
               </h3>
-              <div className="relative">
-                {/* Semi-Finals */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+              <div className="relative"> */}
+        {/* Semi-Finals */}
+        {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
                   <div className="col-span-1">
                     <h4 className="text-sm font-semibold mb-2 text-center text-gray-300">Semi-Finals</h4>
                     <div className="space-y-4">
@@ -671,10 +671,10 @@ export default function PlayoffsClientPage() {
                       </Card>
                     </div>
                   </div>
-                </div>
+                </div> */}
 
-                {/* NFC Championship */}
-                <div className="max-w-md mx-auto">
+        {/* NFC Championship */}
+        {/* <div className="max-w-md mx-auto">
                   <h4 className="text-sm font-semibold mb-2 text-center text-gray-300">NFC Championship</h4>
                   <Card className="overflow-hidden border-[#003B66]/50 bg-black/70">
                     <CardHeader className="bg-gradient-to-r from-[#003B66] to-[#003B66]/70 text-white p-2">
@@ -732,10 +732,10 @@ export default function PlayoffsClientPage() {
               </div>
             </div>
           </motion.div>
-        </div>
+        </div> */}
 
         {/* STC Bowl - Vegas Style */}
-        <motion.div
+        {/* <motion.div
           className="max-w-4xl mx-auto mt-16 mb-12"
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -747,9 +747,9 @@ export default function PlayoffsClientPage() {
             </NeonText>
           </h2>
 
-          <Card className="overflow-hidden border-yellow-500 bg-black/70 relative">
-            {/* Vegas-style decorative elements */}
-            <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-20 pointer-events-none">
+          <Card className="overflow-hidden border-yellow-500 bg-black/70 relative"> */}
+        {/* Vegas-style decorative elements */}
+        {/* <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-20 pointer-events-none">
               <div className="absolute top-5 left-[10%] text-4xl text-red-500">♦</div>
               <div className="absolute bottom-5 right-[10%] text-4xl text-red-500">♥</div>
               <div className="absolute top-5 right-[10%] text-4xl text-white">♠</div>
@@ -824,13 +824,69 @@ export default function PlayoffsClientPage() {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </motion.div> */}
 
         {/* Vegas-themed footer */}
-        <div className="mt-16 text-center border-t border-gray-800 pt-8">
+        {/* <div className="mt-16 text-center border-t border-gray-800 pt-8">
           <p className="text-gray-400 mb-2">STC Season 12 Playoffs</p>
           <p className="text-gray-500 text-sm">The Road to Las Vegas • STC Bowl XII</p>
-        </div>
+        </div> */}
+        {/* </div> */}
+        <motion.div
+          className="max-w-3xl mx-auto text-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.5 }}
+        >
+          <div className="bg-gray-900/50 rounded-lg p-8 backdrop-blur-sm border border-purple-500/20">
+            <h2 className="text-3xl font-bold mb-6">
+              <NeonText color="#eab308">Playoff Picture Not Yet Available</NeonText>
+            </h2>
+
+            <p className="text-gray-300 mb-8 text-lg">
+              The Season 13 playoff bracket is currently being prepared. Check back later in the season when teams have
+              played more games and the playoff picture becomes clearer.
+            </p>
+
+            <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-8">
+              <div className="text-center">
+                <div className="w-24 h-24 mx-auto relative mb-2 opacity-50">
+                  <Image src="/images/team-logos/DEN.png" alt="AFC Team" fill className="object-contain" />
+                </div>
+                <p className="text-gray-400">AFC</p>
+              </div>
+
+              <div className="text-4xl font-bold text-gray-500">VS</div>
+
+              <div className="text-center">
+                <div className="w-24 h-24 mx-auto relative mb-2 opacity-50">
+                  <Image src="/images/team-logos/CHI.png" alt="NFC Team" fill className="object-contain" />
+                </div>
+                <p className="text-gray-400">NFC</p>
+              </div>
+            </div>
+
+            <p className="text-gray-400 mb-8">
+              Stay tuned for updates on which teams will make it to the playoffs and compete for the championship in
+              Season 13.
+            </p>
+
+            <div className="flex flex-wrap justify-center gap-4">
+              <Link href="/standings">
+                <Button className="bg-purple-700 hover:bg-purple-600">View Current Standings</Button>
+              </Link>
+              <Link href="/teams">
+                <Button variant="outline" className="border-purple-700 text-purple-400 hover:bg-purple-900/50">
+                  Explore Teams
+                </Button>
+              </Link>
+            </div>
+          </div>
+
+          <div className="mt-12 text-gray-500 text-sm">
+            The playoff bracket will be updated as the season progresses.
+          </div>
+        </motion.div>
       </div>
     </div>
   )

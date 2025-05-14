@@ -20,7 +20,7 @@ export function SiteHeader() {
         <div className="flex justify-between items-center">
           <Link href="/" className="flex items-center space-x-2">
             <Image src="/images/stc-logo.png" alt="STC Logo" width={50} height={50} className="h-auto" />
-            <span className="text-lg md:text-xl font-bold">SPORTS TALK CLUB SEASON 12</span>
+            <span className="text-lg md:text-xl font-bold">SPORTS TALK CLUB SEASON 13</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -37,11 +37,8 @@ export function SiteHeader() {
             <Link href="/standings" className="text-white hover:text-yellow-400 font-medium">
               Standings
             </Link>
-            <Link href="/stats" className="text-white hover:text-yellow-400 font-medium">
-              Stats
-            </Link>
-            <Link href="/playoffs" className="text-white hover:text-yellow-400 font-medium">
-              Playoffs
+            <Link href="/schedule" className="text-white hover:text-yellow-400 font-medium">
+              Schedule
             </Link>
           </nav>
 
@@ -96,18 +93,11 @@ export function SiteHeader() {
                   Standings
                 </Link>
                 <Link
-                  href="/stats"
+                  href="/schedule"
                   className="text-white hover:text-yellow-400 font-medium px-2 py-2"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Stats
-                </Link>
-                <Link
-                  href="/playoffs"
-                  className="text-white hover:text-yellow-400 font-medium px-2 py-2"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Playoffs
+                  Schedule
                 </Link>
               </nav>
             </motion.div>

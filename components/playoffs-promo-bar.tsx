@@ -47,7 +47,7 @@ export function PlayoffsPromoBar() {
                 textShadow: "0 0 5px #eab308, 0 0 10px #eab308",
               }}
             >
-              STC PLAYOFFS: ROAD TO STC BOWL XII, CLICK HERE TO VIEW BRACKET
+              SEASON 13 PLAYOFFS: COMING SOON
             </span>
             <Sparkles className="h-5 w-5 text-yellow-400 ml-2 hidden sm:block" />
           </div>

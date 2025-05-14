@@ -5,14 +5,14 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://stcleague.com"
 
 // Default metadata
 export const defaultMetadata: Metadata = {
-  title: "Sports Talk Club - Season 12",
+  title: "Sports Talk Club - Season 13",
   description: "The premier football league experience on Roblox",
   openGraph: {
     type: "website",
     locale: "en_US",
     url: baseUrl,
     siteName: "Sports Talk Club",
-    title: "Sports Talk Club - Season 12",
+    title: "Sports Talk Club - Season 13",
     description: "The premier football league experience on Roblox",
     images: [
       {
@@ -25,7 +25,7 @@ export const defaultMetadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Sports Talk Club - Season 12",
+    title: "Sports Talk Club - Season 13",
     description: "The premier football league experience on Roblox",
     images: [`${baseUrl}/images/og-default.png`],
   },

@@ -28,6 +28,11 @@ export function SiteFooter() {
                 </Link>
               </li>
               <li>
+                <Link href="/schedule" className="text-gray-400 hover:text-yellow-400">
+                  Schedule
+                </Link>
+              </li>
+              <li>
                 <Link href="/stats" className="text-gray-400 hover:text-yellow-400">
                   Stats
                 </Link>
