@@ -488,14 +488,16 @@ export default function ScheduleClientPage() {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.6 }}
       >
-        <Image
-          src="/images/schedule-release.png"
-          alt="Season 13 Schedule Release"
-          width={600}
-          height={300}
-          className="max-w-full h-auto"
-          priority
-        />
+        <div className="relative w-full max-w-[600px] h-[200px]">
+          <Image
+            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/SCHEDULE%20RELEASE-5bb2GqPYaUv8VBEYLhChvOYERkTetW.png"
+            alt="Season 13 Schedule Release"
+            fill
+            className="object-contain"
+            priority
+            unoptimized
+          />
+        </div>
       </motion.div>
 
       {/* Schedule Introduction */}
