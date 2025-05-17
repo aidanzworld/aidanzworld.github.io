@@ -265,7 +265,7 @@ export default function DraftAdminClient() {
       if (p.round === selectedPick.round && p.pick === selectedPick.pick) {
         return {
           ...p,
-          isComplete: true,
+          isComplete: true, // Ensure this is set to true
           isOnClock: false,
           pickStatus: "No Status",
           player: {

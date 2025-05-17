@@ -139,6 +139,22 @@ export default function DraftTrackerClient() {
     (pick) => pick.round === draftState.currentRound && pick.pick === draftState.currentPick,
   )
 
+  // Find the last completed pick
+  const findLastCompletedPick = () => {
+    // Sort picks by round and pick number in descending order
+    const sortedPicks = [...draftPicks]
+      .filter((pick) => pick.isComplete && pick.player)
+      .sort((a, b) => {
+        if (a.round !== b.round) {
+          return b.round - a.round // Higher round first
+        }
+        return b.pick - a.pick // Higher pick number first
+      })
+
+    // Return the first pick in the sorted array (the most recent pick)
+    return sortedPicks.length > 0 ? sortedPicks[0] : null
+  }
+
   if (!isClient) {
     return null // Prevent SSR flash
   }
@@ -186,22 +202,56 @@ export default function DraftTrackerClient() {
                 </div>
               </div>
 
-              {currentPick && draftState.isActive && (
-                <div className="flex items-center bg-gray-800 rounded-lg p-3">
-                  <div className="w-12 h-12 relative mr-3">
-                    <Image
-                      src={currentPick.teamLogo || "/placeholder.svg"}
-                      alt={`${currentPick.team} logo`}
-                      fill
-                      className="object-contain"
-                    />
-                  </div>
-                  <div>
-                    <p className="text-yellow-400 font-bold">{currentPick.pickStatus || "ON THE CLOCK"}</p>
-                    <p className="text-lg font-bold">{currentPick.team}</p>
-                  </div>
-                </div>
-              )}
+              {(() => {
+                // Find the last completed pick
+                const lastPick = findLastCompletedPick()
+
+                // If there's a last pick, show it
+                if (lastPick && lastPick.player) {
+                  return (
+                    <div className="flex items-center bg-gray-800 rounded-lg p-3">
+                      <div className="w-12 h-12 relative mr-3">
+                        <Image
+                          src={lastPick.teamLogo || "/placeholder.svg"}
+                          alt={`${lastPick.team} logo`}
+                          fill
+                          className="object-contain"
+                        />
+                      </div>
+                      <div>
+                        <p className="text-yellow-400 font-bold">LAST PICK</p>
+                        <p className="text-lg font-bold">{lastPick.player.name}</p>
+                        <p className="text-sm text-gray-300">
+                          {lastPick.player.position} • {lastPick.team}
+                        </p>
+                      </div>
+                    </div>
+                  )
+                }
+
+                // If no picks have been made yet but there's a team on the clock
+                else if (currentPick && draftState.isActive) {
+                  return (
+                    <div className="flex items-center bg-gray-800 rounded-lg p-3">
+                      <div className="w-12 h-12 relative mr-3">
+                        <Image
+                          src={currentPick.teamLogo || "/placeholder.svg"}
+                          alt={`${currentPick.team} logo`}
+                          fill
+                          className="object-contain"
+                        />
+                      </div>
+                      <div>
+                        <p className="text-yellow-400 font-bold">{currentPick.pickStatus || "ON THE CLOCK"}</p>
+                        <p className="text-lg font-bold">{currentPick.team}</p>
+                      </div>
+                    </div>
+                  )
+                }
+
+                // If nothing to show
+                return null
+              })()}
             </div>
           </CardContent>
         </Card>
