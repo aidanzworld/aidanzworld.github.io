@@ -40,6 +40,9 @@ export function SiteHeader() {
             <Link href="/schedule" className="text-white hover:text-yellow-400 font-medium">
               Schedule
             </Link>
+            <Link href="/draft" className="text-white hover:text-yellow-400 font-medium">
+              Draft
+            </Link>
           </nav>
 
           {/* Mobile Menu Button */}
@@ -98,6 +101,13 @@ export function SiteHeader() {
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Schedule
+                </Link>
+                <Link
+                  href="/draft"
+                  className="text-white hover:text-yellow-400 font-medium px-2 py-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Draft
                 </Link>
               </nav>
             </motion.div>
