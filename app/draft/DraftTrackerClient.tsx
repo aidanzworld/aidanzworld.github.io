@@ -14,6 +14,8 @@ import {
   type DraftState,
   groupPicksByRound,
 } from "@/lib/draft-data"
+import { initBroadcastChannel, getLatestDraftData, type DraftUpdateMessage } from "@/lib/draft-communication"
+import { useToast } from "@/hooks/use-toast"
 
 // Animation variants
 const containerVariants = {
@@ -46,6 +48,57 @@ export default function DraftTrackerClient() {
   const [activeRound, setActiveRound] = useState("1")
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const { toast } = useToast()
+
+  // Initialize and set up broadcast channel listener
+  useEffect(() => {
+    setIsClient(true)
+
+    // Check for stored data first
+    const storedData = getLatestDraftData()
+    if (storedData) {
+      if (storedData.picks) setDraftPicks(storedData.picks)
+      if (storedData.state) setDraftState(storedData.state)
+    }
+
+    // Initialize broadcast channel
+    const channel = initBroadcastChannel()
+
+    if (channel) {
+      // Listen for updates from admin panel
+      channel.onmessage = (event: MessageEvent<DraftUpdateMessage>) => {
+        if (event.data.type === "DRAFT_UPDATE") {
+          const { picks, state } = event.data.data
+
+          if (picks) {
+            setDraftPicks(picks)
+          }
+
+          if (state) {
+            setDraftState(state)
+
+            // If the active round changes, update the tab
+            if (state.currentRound.toString() !== activeRound) {
+              setActiveRound(state.currentRound.toString())
+            }
+          }
+
+          // Show a toast notification
+          toast({
+            title: "Draft Updated",
+            description: "The draft board has been updated with new information",
+          })
+        }
+      }
+    }
+
+    // Clean up
+    return () => {
+      if (channel) {
+        channel.close()
+      }
+    }
+  }, [activeRound, toast])
 
   // Fetch draft data
   const fetchDraftData = async () => {
@@ -72,17 +125,9 @@ export default function DraftTrackerClient() {
     }
   }
 
-  // Poll for updates
+  // Initial data fetch
   useEffect(() => {
-    setIsClient(true)
     fetchDraftData()
-
-    // Set up polling for updates
-    const interval = setInterval(() => {
-      fetchDraftData()
-    }, 30000) // Poll every 30 seconds
-
-    return () => clearInterval(interval)
   }, [])
 
   // Group picks by round
@@ -152,7 +197,7 @@ export default function DraftTrackerClient() {
                     />
                   </div>
                   <div>
-                    <p className="text-yellow-400 font-bold">ON THE CLOCK</p>
+                    <p className="text-yellow-400 font-bold">{currentPick.pickStatus || "ON THE CLOCK"}</p>
                     <p className="text-lg font-bold">{currentPick.team}</p>
                   </div>
                 </div>
@@ -163,7 +208,7 @@ export default function DraftTrackerClient() {
       </motion.div>
 
       {/* Draft Rounds Tabs */}
-      <Tabs defaultValue="1" className="w-full" onValueChange={setActiveRound}>
+      <Tabs value={activeRound} className="w-full" onValueChange={setActiveRound}>
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
           <TabsList className="grid grid-cols-4 mb-8">
             {rounds.map((round) => (

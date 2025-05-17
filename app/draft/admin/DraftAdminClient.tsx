@@ -22,6 +22,7 @@ import {
   colleges,
 } from "@/lib/draft-data"
 import { useToast } from "@/hooks/use-toast"
+import { broadcastDraftUpdate, initBroadcastChannel } from "@/lib/draft-communication"
 
 // Declare containerVariants and itemVariants
 const containerVariants = {
@@ -51,6 +52,12 @@ export default function DraftAdminClient() {
 
   // Add pickStatus to the state
   const [pickStatus, setPickStatus] = useState<"On the Clock" | "The pick is in" | "No Status">("No Status")
+
+  // Initialize broadcast channel
+  useEffect(() => {
+    setIsClient(true)
+    initBroadcastChannel()
+  }, [])
 
   // Authenticate admin
   const handleAuthenticate = () => {
@@ -102,7 +109,7 @@ export default function DraftAdminClient() {
     }
   }
 
-  // Save draft data
+  // Save draft data and broadcast updates
   const saveDraftData = async () => {
     try {
       setSaving(true)
@@ -117,6 +124,9 @@ export default function DraftAdminClient() {
       //   headers: { 'Content-Type': 'application/json' },
       //   body: JSON.stringify({ picks: draftPicks, state: draftState })
       // })
+
+      // Broadcast the update to other tabs/windows
+      broadcastDraftUpdate({ picks: draftPicks, state: draftState })
 
       setSaving(false)
       toast({
@@ -150,13 +160,18 @@ export default function DraftAdminClient() {
       setDraftPicks(resetPicks)
 
       // Reset draft state
-      setDraftState({
+      const newDraftState = {
         ...draftState,
         currentRound: 1,
         currentPick: 1,
         isActive: false,
         lastUpdated: new Date().toISOString(),
-      })
+      }
+
+      setDraftState(newDraftState)
+
+      // Broadcast the update
+      broadcastDraftUpdate({ picks: resetPicks, state: newDraftState })
 
       setSaving(false)
       toast({
@@ -174,19 +189,21 @@ export default function DraftAdminClient() {
     }
   }
 
-  // Update the setCurrentPick function to include pickStatus
+  // Update the setCurrentPick function to include pickStatus and broadcast updates
   const setCurrentPick = (
     round: number,
     pick: number,
     status: "On the Clock" | "The pick is in" | "No Status" = "On the Clock",
   ) => {
     // Update draft state
-    setDraftState({
+    const newDraftState = {
       ...draftState,
       currentRound: round,
       currentPick: pick,
       lastUpdated: new Date().toISOString(),
-    })
+    }
+
+    setDraftState(newDraftState)
 
     // Update pick status
     const updatedPicks = draftPicks.map((p) => ({
@@ -194,7 +211,11 @@ export default function DraftAdminClient() {
       isOnClock: p.round === round && p.pick === pick,
       pickStatus: p.round === round && p.pick === pick ? status : p.pickStatus,
     }))
+
     setDraftPicks(updatedPicks)
+
+    // Broadcast the update
+    broadcastDraftUpdate({ picks: updatedPicks, state: newDraftState })
 
     toast({
       title: "Pick updated",
@@ -202,13 +223,18 @@ export default function DraftAdminClient() {
     })
   }
 
-  // Toggle draft active state
+  // Toggle draft active state and broadcast updates
   const toggleDraftActive = () => {
-    setDraftState({
+    const newDraftState = {
       ...draftState,
       isActive: !draftState.isActive,
       lastUpdated: new Date().toISOString(),
-    })
+    }
+
+    setDraftState(newDraftState)
+
+    // Broadcast the update
+    broadcastDraftUpdate({ picks: draftPicks, state: newDraftState })
 
     toast({
       title: draftState.isActive ? "Draft paused" : "Draft activated",
@@ -230,7 +256,7 @@ export default function DraftAdminClient() {
     }
   }
 
-  // Update the submitPlayerSelection function to clear pickStatus
+  // Update the submitPlayerSelection function to clear pickStatus and broadcast updates
   const submitPlayerSelection = () => {
     if (!selectedPick) return
 
@@ -255,9 +281,11 @@ export default function DraftAdminClient() {
     setDraftPicks(updatedPicks)
 
     // Move to next pick if this was the current pick
+    let nextRound = draftState.currentRound
+    let nextPick = draftState.currentPick
+
     if (selectedPick.round === draftState.currentRound && selectedPick.pick === draftState.currentPick) {
-      let nextRound = draftState.currentRound
-      let nextPick = draftState.currentPick + 1
+      nextPick = draftState.currentPick + 1
 
       // If we're at the end of a round, move to the next round
       const picksInCurrentRound = draftPicks.filter((p) => p.round === draftState.currentRound).length
@@ -265,12 +293,26 @@ export default function DraftAdminClient() {
         nextRound++
         nextPick = 1
       }
+    }
 
-      // If we're at the end of the draft, don't increment
-      const maxRound = Math.max(...draftPicks.map((p) => p.round))
-      if (nextRound <= maxRound) {
-        setCurrentPick(nextRound, nextPick)
+    // If we're at the end of the draft, don't increment
+    const maxRound = Math.max(...draftPicks.map((p) => p.round))
+    if (nextRound <= maxRound) {
+      // Update draft state
+      const newDraftState = {
+        ...draftState,
+        currentRound: nextRound,
+        currentPick: nextPick,
+        lastUpdated: new Date().toISOString(),
       }
+
+      setDraftState(newDraftState)
+
+      // Broadcast the update
+      broadcastDraftUpdate({ picks: updatedPicks, state: newDraftState })
+    } else {
+      // Just broadcast the pick update
+      broadcastDraftUpdate({ picks: updatedPicks, state: draftState })
     }
 
     // Reset form
@@ -286,7 +328,7 @@ export default function DraftAdminClient() {
     })
   }
 
-  // Reset a pick
+  // Reset a pick and broadcast updates
   const resetPick = (pick: DraftPick) => {
     const updatedPicks = draftPicks.map((p) => {
       if (p.round === pick.round && p.pick === pick.pick) {
@@ -302,15 +344,32 @@ export default function DraftAdminClient() {
 
     setDraftPicks(updatedPicks)
 
+    // Broadcast the update
+    broadcastDraftUpdate({ picks: updatedPicks, state: draftState })
+
     toast({
       title: "Pick reset",
       description: `Round ${pick.round}, Pick ${pick.pick} has been reset`,
     })
   }
 
-  useEffect(() => {
-    setIsClient(true)
-  }, [])
+  // Update pick status and broadcast updates
+  const updatePickStatus = (pick: DraftPick, status: "On the Clock" | "The pick is in" | "No Status") => {
+    const updatedPicks = draftPicks.map((p) => {
+      if (p.round === pick.round && p.pick === pick.pick) {
+        return {
+          ...p,
+          pickStatus: status,
+        }
+      }
+      return p
+    })
+
+    setDraftPicks(updatedPicks)
+
+    // Broadcast the update
+    broadcastDraftUpdate({ picks: updatedPicks, state: draftState })
+  }
 
   // Group picks by round
   const picksByRound = groupPicksByRound(draftPicks)
@@ -573,6 +632,9 @@ export default function DraftAdminClient() {
                               })
                               setDraftPicks(updatedPicks)
 
+                              // Broadcast the status update
+                              broadcastDraftUpdate({ picks: updatedPicks, state: draftState })
+
                               // Then submit the player selection
                               submitPlayerSelection()
                             }
@@ -688,16 +750,7 @@ export default function DraftAdminClient() {
                                 <Select
                                   value={pick.pickStatus || "No Status"}
                                   onValueChange={(value) => {
-                                    const updatedPicks = draftPicks.map((p) => {
-                                      if (p.round === pick.round && p.pick === pick.pick) {
-                                        return {
-                                          ...p,
-                                          pickStatus: value as "On the Clock" | "The pick is in" | "No Status",
-                                        }
-                                      }
-                                      return p
-                                    })
-                                    setDraftPicks(updatedPicks)
+                                    updatePickStatus(pick, value as "On the Clock" | "The pick is in" | "No Status")
                                   }}
                                 >
                                   <SelectTrigger className="h-9 w-32">
