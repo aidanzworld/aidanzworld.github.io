@@ -84,11 +84,7 @@ export default function DraftTrackerClient() {
 
           if (state) {
             setDraftState(state)
-
-            // If the active round changes, update the tab
-            if (state.currentRound.toString() !== activeRound) {
-              setActiveRound(state.currentRound.toString())
-            }
+            // Don't automatically change the active tab
           }
         }
       }
@@ -106,11 +102,7 @@ export default function DraftTrackerClient() {
           if (serverData.picks) setDraftPicks(serverData.picks)
           if (serverData.state) {
             setDraftState(serverData.state)
-
-            // If the active round changes, update the tab
-            if (serverData.state.currentRound.toString() !== activeRound) {
-              setActiveRound(serverData.state.currentRound.toString())
-            }
+            // Don't automatically change the active tab
           }
         }
       }
@@ -143,7 +135,10 @@ export default function DraftTrackerClient() {
         if (serverData.picks) setDraftPicks(serverData.picks)
         if (serverData.state) {
           setDraftState(serverData.state)
-          setActiveRound(serverData.state.currentRound.toString())
+          // Only set the active round on initial load, not on subsequent fetches
+          if (loading) {
+            setActiveRound(serverData.state.currentRound.toString())
+          }
         }
       }
 
