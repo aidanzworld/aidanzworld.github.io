@@ -185,6 +185,49 @@ export default function DraftAdminClient() {
     }
   }
 
+  // Add this function to the component to reset the draft state to round 1, pick 1
+  const resetToFirstPick = async () => {
+    try {
+      setSaving(true)
+
+      // Reset draft state to round 1, pick 1
+      const newDraftState = {
+        ...draftState,
+        currentRound: 1,
+        currentPick: 1,
+        lastUpdated: new Date().toISOString(),
+      }
+
+      setDraftState(newDraftState)
+
+      // Update the first pick to be on the clock
+      const updatedPicks = draftPicks.map((p) => ({
+        ...p,
+        isOnClock: p.round === 1 && p.pick === 1,
+        pickStatus: p.round === 1 && p.pick === 1 ? "On the Clock" : p.pickStatus,
+      }))
+
+      setDraftPicks(updatedPicks)
+
+      // Broadcast the update
+      broadcastDraftUpdate({ picks: updatedPicks, state: newDraftState })
+
+      setSaving(false)
+      toast({
+        title: "Reset to First Pick",
+        description: "Draft has been reset to Round 1, Pick 1",
+      })
+    } catch (err) {
+      toast({
+        title: "Error",
+        description: "Failed to reset draft",
+        variant: "destructive",
+      })
+      setSaving(false)
+      console.error(err)
+    }
+  }
+
   // Update the setCurrentPick function to include pickStatus and broadcast updates
   const setCurrentPick = (
     round: number,
@@ -466,6 +509,15 @@ export default function DraftAdminClient() {
                   className="bg-red-600 hover:bg-red-700"
                 >
                   Reset Draft
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={resetToFirstPick}
+                  disabled={saving}
+                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  Reset to Round 1
                 </Button>
               </div>
             </CardTitle>

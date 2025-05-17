@@ -17,6 +17,14 @@ export async function POST(request: Request) {
   try {
     const data = await request.json()
 
+    // Debug log to see what's being received
+    console.log("Received draft data:", {
+      currentRound: data.state?.currentRound,
+      currentPick: data.state?.currentPick,
+      firstPick: data.picks?.[0]?.round,
+      picksCount: data.picks?.length,
+    })
+
     // Update draft data
     if (data.picks) draftPicks = data.picks
     if (data.state) draftState = data.state

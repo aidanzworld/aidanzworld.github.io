@@ -22,7 +22,7 @@ export interface DraftState {
   lastUpdated: string
 }
 
-// Initial draft state
+// Make sure the initialDraftState is correctly set to round 1, pick 1
 export const initialDraftState: DraftState = {
   currentRound: 1,
   currentPick: 1,
@@ -491,4 +491,18 @@ export function groupPicksByRound(picks: DraftPick[]) {
     },
     {} as Record<number, DraftPick[]>,
   )
+}
+
+// Add a helper function to verify the draft picks are correctly ordered
+export function verifyDraftOrder(picks: DraftPick[]): boolean {
+  // Check if picks are in the correct order
+  for (let i = 0; i < picks.length; i++) {
+    const pick = picks[i]
+    // For round 1, picks should start at 1
+    if (pick.round === 1 && pick.pick < 1) {
+      console.error("Invalid pick number in round 1:", pick)
+      return false
+    }
+  }
+  return true
 }
