@@ -113,17 +113,13 @@ export default function DraftAdminClient() {
   const saveDraftData = async () => {
     try {
       setSaving(true)
-      // In a real app, this would be an API call
-      // For now, we'll simulate a delay
-      await new Promise((resolve) => setTimeout(resolve, 1000))
 
-      // Simulate saving data
-      // In production, replace with actual API calls
-      // await fetch('/api/draft', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ picks: draftPicks, state: draftState })
-      // })
+      // Send to server API
+      await fetch("/api/draft", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ picks: draftPicks, state: draftState }),
+      })
 
       // Broadcast the update to other tabs/windows
       broadcastDraftUpdate({ picks: draftPicks, state: draftState })

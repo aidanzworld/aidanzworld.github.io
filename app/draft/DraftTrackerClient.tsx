@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { motion } from "framer-motion"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -14,7 +14,12 @@ import {
   type DraftState,
   groupPicksByRound,
 } from "@/lib/draft-data"
-import { initBroadcastChannel, getLatestDraftData, type DraftUpdateMessage } from "@/lib/draft-communication"
+import {
+  initBroadcastChannel,
+  getLatestDraftData,
+  fetchDraftDataFromServer,
+  type DraftUpdateMessage,
+} from "@/lib/draft-communication"
 import { useToast } from "@/hooks/use-toast"
 
 // Animation variants
@@ -50,7 +55,10 @@ export default function DraftTrackerClient() {
   const [error, setError] = useState<string | null>(null)
   const { toast } = useToast()
 
-  // Initialize and set up broadcast channel listener
+  // Polling interval reference
+  const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null)
+
+  // Initialize and set up broadcast channel listener and server polling
   useEffect(() => {
     setIsClient(true)
 
@@ -61,11 +69,11 @@ export default function DraftTrackerClient() {
       if (storedData.state) setDraftState(storedData.state)
     }
 
-    // Initialize broadcast channel
+    // Initialize broadcast channel for same-device updates
     const channel = initBroadcastChannel()
 
     if (channel) {
-      // Listen for updates from admin panel
+      // Listen for updates from admin panel on same device
       channel.onmessage = (event: MessageEvent<DraftUpdateMessage>) => {
         if (event.data.type === "DRAFT_UPDATE") {
           const { picks, state } = event.data.data
@@ -82,41 +90,63 @@ export default function DraftTrackerClient() {
               setActiveRound(state.currentRound.toString())
             }
           }
-
-          // Show a toast notification
-          toast({
-            title: "Draft Updated",
-            description: "The draft board has been updated with new information",
-          })
         }
       }
     }
+
+    // Set up polling for server updates (for cross-device real-time updates)
+    const pollForUpdates = async () => {
+      const serverData = await fetchDraftDataFromServer()
+      if (serverData) {
+        // Only update if the data is newer than what we have
+        const currentLastUpdated = new Date(draftState.lastUpdated).getTime()
+        const serverLastUpdated = new Date(serverData.state.lastUpdated).getTime()
+
+        if (serverLastUpdated > currentLastUpdated) {
+          if (serverData.picks) setDraftPicks(serverData.picks)
+          if (serverData.state) {
+            setDraftState(serverData.state)
+
+            // If the active round changes, update the tab
+            if (serverData.state.currentRound.toString() !== activeRound) {
+              setActiveRound(serverData.state.currentRound.toString())
+            }
+          }
+        }
+      }
+    }
+
+    // Start polling (every 3 seconds)
+    pollingIntervalRef.current = setInterval(pollForUpdates, 3000)
+
+    // Initial fetch from server
+    fetchDraftData()
 
     // Clean up
     return () => {
       if (channel) {
         channel.close()
       }
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current)
+      }
     }
   }, [activeRound, toast])
 
-  // Fetch draft data
+  // Fetch draft data from server
   const fetchDraftData = async () => {
     try {
       setLoading(true)
-      // In a real app, this would be an API call
-      // For now, we'll simulate a delay and use the initial data
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      const serverData = await fetchDraftDataFromServer()
 
-      // Simulate fetching data
-      // In production, replace with actual API calls
-      // const response = await fetch('/api/draft')
-      // const data = await response.json()
-      // setDraftPicks(data.picks)
-      // setDraftState(data.state)
+      if (serverData) {
+        if (serverData.picks) setDraftPicks(serverData.picks)
+        if (serverData.state) {
+          setDraftState(serverData.state)
+          setActiveRound(serverData.state.currentRound.toString())
+        }
+      }
 
-      // For demo, we'll just use our initial data
-      // but in a real app, you'd fetch from an API
       setLoading(false)
     } catch (err) {
       setError("Failed to load draft data")
@@ -124,20 +154,6 @@ export default function DraftTrackerClient() {
       console.error(err)
     }
   }
-
-  // Initial data fetch
-  useEffect(() => {
-    fetchDraftData()
-  }, [])
-
-  // Group picks by round
-  const picksByRound = groupPicksByRound(draftPicks)
-  const rounds = Object.keys(picksByRound).map(Number)
-
-  // Find the current pick
-  const currentPick = draftPicks.find(
-    (pick) => pick.round === draftState.currentRound && pick.pick === draftState.currentPick,
-  )
 
   // Find the last completed pick
   const findLastCompletedPick = () => {
@@ -154,6 +170,15 @@ export default function DraftTrackerClient() {
     // Return the first pick in the sorted array (the most recent pick)
     return sortedPicks.length > 0 ? sortedPicks[0] : null
   }
+
+  // Group picks by round
+  const picksByRound = groupPicksByRound(draftPicks)
+  const rounds = Object.keys(picksByRound).map(Number)
+
+  // Find the current pick
+  const currentPick = draftPicks.find(
+    (pick) => pick.round === draftState.currentRound && pick.pick === draftState.currentPick,
+  )
 
   if (!isClient) {
     return null // Prevent SSR flash

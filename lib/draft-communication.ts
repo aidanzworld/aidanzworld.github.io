@@ -21,8 +21,8 @@ export function initBroadcastChannel() {
   return broadcastChannel
 }
 
-// Function to broadcast draft updates to other tabs
-export function broadcastDraftUpdate(data: any) {
+// Function to broadcast draft updates to other tabs and save to server
+export async function broadcastDraftUpdate(data: any) {
   // Save to localStorage for persistence
   localStorage.setItem(
     "draft_data",
@@ -41,6 +41,17 @@ export function broadcastDraftUpdate(data: any) {
     }
     channel.postMessage(message)
   }
+
+  // Send to server API
+  try {
+    await fetch("/api/draft", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    })
+  } catch (error) {
+    console.error("Error sending draft update to server:", error)
+  }
 }
 
 // Function to get the latest draft data from localStorage
@@ -54,4 +65,19 @@ export function getLatestDraftData() {
     console.error("Error retrieving draft data from localStorage:", error)
   }
   return null
+}
+
+// Function to fetch the latest draft data from the server
+export async function fetchDraftDataFromServer() {
+  try {
+    const response = await fetch("/api/draft")
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error("Error fetching draft data from server:", error)
+    return null
+  }
 }
