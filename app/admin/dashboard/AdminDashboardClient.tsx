@@ -2,20 +2,73 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Users, Calendar, Trophy, Settings, Activity, LogOut } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { motion } from "framer-motion"
+import { Users, Calendar, Trophy, Settings, LogOut, Activity, TrendingUp, Clock, Shield } from "lucide-react"
+import Link from "next/link"
+import Image from "next/image"
+
+interface DashboardStats {
+  totalTeams: number
+  totalGames: number
+  completedGames: number
+  upcomingGames: number
+  totalPlayers: number
+  activeUsers: number
+}
+
+interface RecentActivity {
+  id: string
+  type: "game" | "team" | "player"
+  description: string
+  timestamp: string
+}
 
 export default function AdminDashboardClient() {
   const router = useRouter()
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const [stats, setStats] = useState<DashboardStats>({
+    totalTeams: 12,
+    totalGames: 48,
+    completedGames: 32,
+    upcomingGames: 16,
+    totalPlayers: 360,
+    activeUsers: 1247,
+  })
+  const [recentActivity] = useState<RecentActivity[]>([
+    {
+      id: "1",
+      type: "game",
+      description: "Chiefs defeated Raiders 28-17",
+      timestamp: "2 hours ago",
+    },
+    {
+      id: "2",
+      type: "team",
+      description: "Updated Dolphins roster",
+      timestamp: "4 hours ago",
+    },
+    {
+      id: "3",
+      type: "game",
+      description: "Scheduled Week 14 games",
+      timestamp: "1 day ago",
+    },
+    {
+      id: "4",
+      type: "player",
+      description: "Added new player to Colts",
+      timestamp: "2 days ago",
+    },
+  ])
 
   useEffect(() => {
     const checkAuth = () => {
-      const auth = localStorage.getItem("stc-admin-auth")
-      if (auth === "authenticated") {
+      const auth = localStorage.getItem("stc-admin")
+      if (auth === "true") {
         setIsAuthenticated(true)
       } else {
         router.push("/admin")
@@ -27,14 +80,17 @@ export default function AdminDashboardClient() {
   }, [router])
 
   const handleLogout = () => {
-    localStorage.removeItem("stc-admin-auth")
+    localStorage.removeItem("stc-admin")
     router.push("/admin")
   }
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-red-900 via-black to-yellow-900 flex items-center justify-center">
-        <div className="text-white text-xl">Loading...</div>
+      <div className="min-h-screen bg-gradient-to-br from-stc-red via-black to-stc-gold flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
+          <p className="mt-4 text-white">Loading dashboard...</p>
+        </div>
       </div>
     )
   }
@@ -43,121 +99,169 @@ export default function AdminDashboardClient() {
     return null
   }
 
-  const stats = [
-    { title: "Total Teams", value: "12", icon: Users },
-    { title: "Games Played", value: "156", icon: Calendar },
-    { title: "Active Players", value: "360", icon: Trophy },
-    { title: "System Status", value: "Online", icon: Activity },
-  ]
-
-  const quickActions = [
-    {
-      title: "Manage Teams",
-      description: "Edit team information, logos, and records",
-      href: "/admin/teams",
-      icon: Users,
-    },
-    {
-      title: "Manage Games",
-      description: "Update scores and game schedules",
-      href: "/admin/games",
-      icon: Calendar,
-    },
-    {
-      title: "League Settings",
-      description: "Configure league rules and settings",
-      href: "/admin/settings",
-      icon: Settings,
-    },
-  ]
-
-  const recentActivity = [
-    { action: "Updated game score", details: "Chiefs vs Raiders - 28-17", time: "2 hours ago" },
-    { action: "Added new team", details: "Las Vegas Raiders", time: "1 day ago" },
-    { action: "Updated standings", details: "Week 12 standings updated", time: "2 days ago" },
-    { action: "Player trade", details: "QB moved to Colts", time: "3 days ago" },
-  ]
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-900 via-black to-yellow-900">
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-4xl font-bold text-white mb-2">Admin Dashboard</h1>
-            <p className="text-gray-300">Manage your STC League</p>
+    <div className="min-h-screen bg-gradient-to-br from-stc-red via-black to-stc-gold">
+      {/* Header */}
+      <div className="border-b border-white/10 bg-black/20 backdrop-blur-sm">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <Image src="/images/stc-logo.png" alt="STC Logo" width={48} height={48} className="rounded-lg" />
+              <div>
+                <h1 className="text-2xl font-bold text-white">Admin Dashboard</h1>
+                <p className="text-gray-300">Sports Talk Club League Management</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              <Badge className="bg-green-600 text-white">
+                <Activity className="w-4 h-4 mr-1" />
+                System Online
+              </Badge>
+              <Button
+                onClick={handleLogout}
+                variant="outline"
+                size="sm"
+                className="border-white/20 text-white hover:bg-white/10 bg-transparent"
+              >
+                <LogOut className="w-4 h-4 mr-2" />
+                Logout
+              </Button>
+            </div>
           </div>
-          <Button
-            onClick={handleLogout}
-            variant="outline"
-            className="bg-red-600 border-red-500 text-white hover:bg-red-700"
-          >
-            <LogOut className="w-4 h-4 mr-2" />
-            Logout
-          </Button>
         </div>
+      </div>
 
+      <div className="container mx-auto px-4 py-8">
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {stats.map((stat, index) => (
-            <Card key={index} className="bg-black/50 border-red-500/30 backdrop-blur-sm">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+            <Card className="bg-black/40 border-white/10 backdrop-blur-sm">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-gray-300">{stat.title}</CardTitle>
-                <stat.icon className="h-4 w-4 text-red-400" />
+                <CardTitle className="text-sm font-medium text-gray-300">Total Teams</CardTitle>
+                <Users className="h-4 w-4 text-stc-gold" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-white">{stat.value}</div>
+                <div className="text-2xl font-bold text-white">{stats.totalTeams}</div>
+                <p className="text-xs text-gray-400">Active franchises</p>
               </CardContent>
             </Card>
-          ))}
+          </motion.div>
+
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+            <Card className="bg-black/40 border-white/10 backdrop-blur-sm">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium text-gray-300">Total Games</CardTitle>
+                <Calendar className="h-4 w-4 text-stc-gold" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-white">{stats.totalGames}</div>
+                <p className="text-xs text-gray-400">
+                  {stats.completedGames} completed, {stats.upcomingGames} upcoming
+                </p>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+            <Card className="bg-black/40 border-white/10 backdrop-blur-sm">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium text-gray-300">Total Players</CardTitle>
+                <Trophy className="h-4 w-4 text-stc-gold" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-white">{stats.totalPlayers}</div>
+                <p className="text-xs text-gray-400">Across all teams</p>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
+            <Card className="bg-black/40 border-white/10 backdrop-blur-sm">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium text-gray-300">Active Users</CardTitle>
+                <TrendingUp className="h-4 w-4 text-stc-gold" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-white">{stats.activeUsers}</div>
+                <p className="text-xs text-gray-400">Website visitors</p>
+              </CardContent>
+            </Card>
+          </motion.div>
         </div>
 
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          <div>
-            <h2 className="text-2xl font-bold text-white mb-4">Quick Actions</h2>
-            <div className="space-y-4">
-              {quickActions.map((action, index) => (
-                <Card
-                  key={index}
-                  className="bg-black/50 border-red-500/30 backdrop-blur-sm hover:bg-black/70 transition-colors"
-                >
-                  <CardHeader>
-                    <div className="flex items-center space-x-3">
-                      <action.icon className="h-6 w-6 text-red-400" />
-                      <div>
-                        <CardTitle className="text-white">{action.title}</CardTitle>
-                        <CardDescription className="text-gray-400">{action.description}</CardDescription>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <Link href={action.href}>
-                      <Button className="w-full bg-red-600 hover:bg-red-700 text-white">Open</Button>
-                    </Link>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Quick Actions */}
+          <div className="lg:col-span-2">
+            <Card className="bg-black/40 border-white/10 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="text-white">Quick Actions</CardTitle>
+                <CardDescription className="text-gray-400">Manage your league content</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Link href="/admin/teams">
+                    <Button className="w-full h-20 bg-stc-red hover:bg-stc-red/80 text-white flex flex-col items-center justify-center space-y-2">
+                      <Users className="w-6 h-6" />
+                      <span>Manage Teams</span>
+                    </Button>
+                  </Link>
+
+                  <Link href="/admin/games">
+                    <Button className="w-full h-20 bg-stc-gold hover:bg-stc-gold/80 text-black flex flex-col items-center justify-center space-y-2">
+                      <Calendar className="w-6 h-6" />
+                      <span>Manage Games</span>
+                    </Button>
+                  </Link>
+
+                  <Button className="w-full h-20 bg-gray-700 hover:bg-gray-600 text-white flex flex-col items-center justify-center space-y-2">
+                    <Trophy className="w-6 h-6" />
+                    <span>Manage Players</span>
+                  </Button>
+
+                  <Button className="w-full h-20 bg-gray-700 hover:bg-gray-600 text-white flex flex-col items-center justify-center space-y-2">
+                    <Settings className="w-6 h-6" />
+                    <span>System Settings</span>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Recent Activity */}
           <div>
-            <h2 className="text-2xl font-bold text-white mb-4">Recent Activity</h2>
-            <Card className="bg-black/50 border-red-500/30 backdrop-blur-sm">
+            <Card className="bg-black/40 border-white/10 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-white">System Activity</CardTitle>
-                <CardDescription className="text-gray-400">Latest updates and changes</CardDescription>
+                <CardTitle className="text-white">Recent Activity</CardTitle>
+                <CardDescription className="text-gray-400">Latest system updates</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {recentActivity.map((activity, index) => (
-                    <div key={index} className="flex justify-between items-start">
-                      <div>
-                        <p className="text-white font-medium">{activity.action}</p>
-                        <p className="text-gray-400 text-sm">{activity.details}</p>
+                  {recentActivity.map((activity) => (
+                    <div key={activity.id} className="flex items-start space-x-3">
+                      <div className="flex-shrink-0">
+                        {activity.type === "game" && (
+                          <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
+                            <Calendar className="w-4 h-4 text-white" />
+                          </div>
+                        )}
+                        {activity.type === "team" && (
+                          <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                            <Users className="w-4 h-4 text-white" />
+                          </div>
+                        )}
+                        {activity.type === "player" && (
+                          <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
+                            <Shield className="w-4 h-4 text-white" />
+                          </div>
+                        )}
                       </div>
-                      <span className="text-gray-500 text-xs">{activity.time}</span>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm text-white">{activity.description}</p>
+                        <div className="flex items-center mt-1">
+                          <Clock className="w-3 h-3 text-gray-400 mr-1" />
+                          <p className="text-xs text-gray-400">{activity.timestamp}</p>
+                        </div>
+                      </div>
                     </div>
                   ))}
                 </div>

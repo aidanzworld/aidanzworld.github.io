@@ -3,7 +3,7 @@ import AdminDashboardClient from "./AdminDashboardClient"
 
 export const metadata: Metadata = {
   title: "Admin Dashboard - STC League",
-  description: "Admin dashboard for managing the STC League",
+  description: "Sports Talk Club League administration dashboard",
 }
 
 export default function AdminDashboardPage() {
