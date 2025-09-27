@@ -9,8 +9,9 @@ import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { motion } from "framer-motion"
-import { ArrowLeft, Edit, Save, Calendar, Trophy, Filter, RefreshCw } from "lucide-react"
+import { ArrowLeft, Edit, Save, Calendar, Trophy, RefreshCw } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 
@@ -41,7 +42,7 @@ export default function AdminGamesClient() {
   const [games, setGames] = useState<Game[]>([])
   const [editingGame, setEditingGame] = useState<Game | null>(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [selectedWeek, setSelectedWeek] = useState<string>("all")
+  const [activeWeek, setActiveWeek] = useState("1")
 
   useEffect(() => {
     const checkAuth = () => {
@@ -59,8 +60,9 @@ export default function AdminGamesClient() {
   }, [router])
 
   const loadGames = () => {
-    // Sample game data - matches the schedule structure
-    const sampleGames: Game[] = [
+    // Complete game data for all 10 weeks (5 games per week)
+    const allGames: Game[] = [
+      // Week 1
       {
         id: "w1-g1",
         week: 1,
@@ -95,6 +97,30 @@ export default function AdminGamesClient() {
         time: "10:30 PM ET",
       },
       {
+        id: "w1-g4",
+        week: 1,
+        homeTeam: { name: "Panthers", city: "Carolina", logo: "/images/team-logos/CAR.png" },
+        awayTeam: { name: "Jets", city: "New York", logo: "/images/team-logos/NYJ.png" },
+        homeScore: 13,
+        awayScore: 20,
+        status: "final",
+        date: "2024-09-20",
+        time: "1:00 PM ET",
+      },
+      {
+        id: "w1-g5",
+        week: 1,
+        homeTeam: { name: "Buccaneers", city: "Tampa Bay", logo: "/images/team-logos/TB.png" },
+        awayTeam: { name: "Ravens", city: "Baltimore", logo: "/images/team-logos/BAL.png" },
+        homeScore: 10,
+        awayScore: 35,
+        status: "final",
+        date: "2024-09-20",
+        time: "9:45 PM ET",
+      },
+
+      // Week 2
+      {
         id: "w2-g1",
         week: 2,
         homeTeam: { name: "49ers", city: "San Francisco", logo: "/images/team-logos/49ERS.png" },
@@ -106,6 +132,28 @@ export default function AdminGamesClient() {
         time: "7:30 PM ET",
       },
       {
+        id: "w2-g2",
+        week: 2,
+        homeTeam: { name: "Jets", city: "New York", logo: "/images/team-logos/NYJ.png" },
+        awayTeam: { name: "Rams", city: "Los Angeles", logo: "/images/team-logos/LAR.png" },
+        homeScore: 21,
+        awayScore: 17,
+        status: "final",
+        date: "2024-09-23",
+        time: "9:45 PM ET",
+      },
+      {
+        id: "w2-g3",
+        week: 2,
+        homeTeam: { name: "Ravens", city: "Baltimore", logo: "/images/team-logos/BAL.png" },
+        awayTeam: { name: "Chiefs", city: "Kansas City", logo: "/images/team-logos/KAN.png" },
+        homeScore: 28,
+        awayScore: 31,
+        status: "final",
+        date: "2024-09-24",
+        time: "8:15 PM ET",
+      },
+      {
         id: "w2-g4",
         week: 2,
         homeTeam: { name: "Bears", city: "Chicago", logo: "/images/team-logos/CHI.png" },
@@ -115,6 +163,17 @@ export default function AdminGamesClient() {
         time: "8:15 PM ET",
       },
       {
+        id: "w2-g5",
+        week: 2,
+        homeTeam: { name: "Buccaneers", city: "Tampa Bay", logo: "/images/team-logos/TB.png" },
+        awayTeam: { name: "Panthers", city: "Carolina", logo: "/images/team-logos/CAR.png" },
+        status: "scheduled",
+        date: "2024-09-29",
+        time: "8:30 PM ET",
+      },
+
+      // Week 3
+      {
         id: "w3-g1",
         week: 3,
         homeTeam: { name: "Dolphins", city: "Miami", logo: "/images/team-logos/MIA.png" },
@@ -123,8 +182,374 @@ export default function AdminGamesClient() {
         date: "2024-10-01",
         time: "8:15 PM ET",
       },
+      {
+        id: "w3-g2",
+        week: 3,
+        homeTeam: { name: "Jaguars", city: "Jacksonville", logo: "/images/team-logos/JAX.png" },
+        awayTeam: { name: "Rams", city: "Los Angeles", logo: "/images/team-logos/LAR.png" },
+        status: "scheduled",
+        date: "2024-10-02",
+        time: "8:15 PM ET",
+      },
+      {
+        id: "w3-g3",
+        week: 3,
+        homeTeam: { name: "Panthers", city: "Carolina", logo: "/images/team-logos/CAR.png" },
+        awayTeam: { name: "49ers", city: "San Francisco", logo: "/images/team-logos/49ERS.png" },
+        status: "scheduled",
+        date: "2024-10-04",
+        time: "1:00 PM ET",
+      },
+      {
+        id: "w3-g4",
+        week: 3,
+        homeTeam: { name: "Jets", city: "New York", logo: "/images/team-logos/NYJ.png" },
+        awayTeam: { name: "Ravens", city: "Baltimore", logo: "/images/team-logos/BAL.png" },
+        status: "scheduled",
+        date: "2024-10-05",
+        time: "8:20 PM ET",
+      },
+      {
+        id: "w3-g5",
+        week: 3,
+        homeTeam: { name: "Chiefs", city: "Kansas City", logo: "/images/team-logos/KAN.png" },
+        awayTeam: { name: "Buccaneers", city: "Tampa Bay", logo: "/images/team-logos/TB.png" },
+        status: "scheduled",
+        date: "2024-10-06",
+        time: "8:15 PM ET",
+      },
+
+      // Week 4
+      {
+        id: "w4-g1",
+        week: 4,
+        homeTeam: { name: "Rams", city: "Los Angeles", logo: "/images/team-logos/LAR.png" },
+        awayTeam: { name: "Dolphins", city: "Miami", logo: "/images/team-logos/MIA.png" },
+        status: "scheduled",
+        date: "2024-10-08",
+        time: "8:15 PM ET",
+      },
+      {
+        id: "w4-g2",
+        week: 4,
+        homeTeam: { name: "Ravens", city: "Baltimore", logo: "/images/team-logos/BAL.png" },
+        awayTeam: { name: "Jaguars", city: "Jacksonville", logo: "/images/team-logos/JAX.png" },
+        status: "scheduled",
+        date: "2024-10-09",
+        time: "8:30 PM ET",
+      },
+      {
+        id: "w4-g3",
+        week: 4,
+        homeTeam: { name: "Chiefs", city: "Kansas City", logo: "/images/team-logos/KAN.png" },
+        awayTeam: { name: "Jets", city: "New York", logo: "/images/team-logos/NYJ.png" },
+        status: "scheduled",
+        date: "2024-10-11",
+        time: "1:00 PM ET",
+      },
+      {
+        id: "w4-g4",
+        week: 4,
+        homeTeam: { name: "49ers", city: "San Francisco", logo: "/images/team-logos/49ERS.png" },
+        awayTeam: { name: "Buccaneers", city: "Tampa Bay", logo: "/images/team-logos/TB.png" },
+        status: "scheduled",
+        date: "2024-10-12",
+        time: "8:20 PM ET",
+      },
+      {
+        id: "w4-g5",
+        week: 4,
+        homeTeam: { name: "Bears", city: "Chicago", logo: "/images/team-logos/CHI.png" },
+        awayTeam: { name: "Panthers", city: "Carolina", logo: "/images/team-logos/CAR.png" },
+        status: "scheduled",
+        date: "2024-10-13",
+        time: "7:15 PM ET",
+      },
+
+      // Week 5
+      {
+        id: "w5-g1",
+        week: 5,
+        homeTeam: { name: "Panthers", city: "Carolina", logo: "/images/team-logos/CAR.png" },
+        awayTeam: { name: "Rams", city: "Los Angeles", logo: "/images/team-logos/LAR.png" },
+        status: "scheduled",
+        date: "2024-10-15",
+        time: "8:15 PM ET",
+      },
+      {
+        id: "w5-g2",
+        week: 5,
+        homeTeam: { name: "Dolphins", city: "Miami", logo: "/images/team-logos/MIA.png" },
+        awayTeam: { name: "Ravens", city: "Baltimore", logo: "/images/team-logos/BAL.png" },
+        status: "scheduled",
+        date: "2024-10-16",
+        time: "8:30 PM ET",
+      },
+      {
+        id: "w5-g3",
+        week: 5,
+        homeTeam: { name: "Buccaneers", city: "Tampa Bay", logo: "/images/team-logos/TB.png" },
+        awayTeam: { name: "Bears", city: "Chicago", logo: "/images/team-logos/CHI.png" },
+        status: "scheduled",
+        date: "2024-10-18",
+        time: "1:00 PM ET",
+      },
+      {
+        id: "w5-g4",
+        week: 5,
+        homeTeam: { name: "Chiefs", city: "Kansas City", logo: "/images/team-logos/KAN.png" },
+        awayTeam: { name: "49ers", city: "San Francisco", logo: "/images/team-logos/49ERS.png" },
+        status: "scheduled",
+        date: "2024-10-19",
+        time: "8:20 PM ET",
+      },
+      {
+        id: "w5-g5",
+        week: 5,
+        homeTeam: { name: "Jaguars", city: "Jacksonville", logo: "/images/team-logos/JAX.png" },
+        awayTeam: { name: "Jets", city: "New York", logo: "/images/team-logos/NYJ.png" },
+        status: "scheduled",
+        date: "2024-10-20",
+        time: "8:15 PM ET",
+      },
+
+      // Week 6
+      {
+        id: "w6-g1",
+        week: 6,
+        homeTeam: { name: "Jets", city: "New York", logo: "/images/team-logos/NYJ.png" },
+        awayTeam: { name: "Dolphins", city: "Miami", logo: "/images/team-logos/MIA.png" },
+        status: "scheduled",
+        date: "2024-10-22",
+        time: "8:30 PM ET",
+      },
+      {
+        id: "w6-g2",
+        week: 6,
+        homeTeam: { name: "Bears", city: "Chicago", logo: "/images/team-logos/CHI.png" },
+        awayTeam: { name: "49ers", city: "San Francisco", logo: "/images/team-logos/49ERS.png" },
+        status: "scheduled",
+        date: "2024-10-23",
+        time: "8:15 PM ET",
+      },
+      {
+        id: "w6-g3",
+        week: 6,
+        homeTeam: { name: "Ravens", city: "Baltimore", logo: "/images/team-logos/BAL.png" },
+        awayTeam: { name: "Panthers", city: "Carolina", logo: "/images/team-logos/CAR.png" },
+        status: "scheduled",
+        date: "2024-10-25",
+        time: "1:00 PM ET",
+      },
+      {
+        id: "w6-g4",
+        week: 6,
+        homeTeam: { name: "Rams", city: "Los Angeles", logo: "/images/team-logos/LAR.png" },
+        awayTeam: { name: "Buccaneers", city: "Tampa Bay", logo: "/images/team-logos/TB.png" },
+        status: "scheduled",
+        date: "2024-10-26",
+        time: "8:20 PM ET",
+      },
+      {
+        id: "w6-g5",
+        week: 6,
+        homeTeam: { name: "Jaguars", city: "Jacksonville", logo: "/images/team-logos/JAX.png" },
+        awayTeam: { name: "Chiefs", city: "Kansas City", logo: "/images/team-logos/KAN.png" },
+        status: "scheduled",
+        date: "2024-10-27",
+        time: "8:15 PM ET",
+      },
+
+      // Week 7
+      {
+        id: "w7-g1",
+        week: 7,
+        homeTeam: { name: "Bears", city: "Chicago", logo: "/images/team-logos/CHI.png" },
+        awayTeam: { name: "Jets", city: "New York", logo: "/images/team-logos/NYJ.png" },
+        status: "scheduled",
+        date: "2024-10-29",
+        time: "8:15 PM ET",
+      },
+      {
+        id: "w7-g2",
+        week: 7,
+        homeTeam: { name: "Ravens", city: "Baltimore", logo: "/images/team-logos/BAL.png" },
+        awayTeam: { name: "Rams", city: "Los Angeles", logo: "/images/team-logos/LAR.png" },
+        status: "scheduled",
+        date: "2024-10-30",
+        time: "8:15 PM ET",
+      },
+      {
+        id: "w7-g3",
+        week: 7,
+        homeTeam: { name: "49ers", city: "San Francisco", logo: "/images/team-logos/49ERS.png" },
+        awayTeam: { name: "Jaguars", city: "Jacksonville", logo: "/images/team-logos/JAX.png" },
+        status: "scheduled",
+        date: "2024-11-01",
+        time: "1:00 PM ET",
+      },
+      {
+        id: "w7-g4",
+        week: 7,
+        homeTeam: { name: "Panthers", city: "Carolina", logo: "/images/team-logos/CAR.png" },
+        awayTeam: { name: "Chiefs", city: "Kansas City", logo: "/images/team-logos/KAN.png" },
+        status: "scheduled",
+        date: "2024-11-02",
+        time: "8:20 PM ET",
+      },
+      {
+        id: "w7-g5",
+        week: 7,
+        homeTeam: { name: "Buccaneers", city: "Tampa Bay", logo: "/images/team-logos/TB.png" },
+        awayTeam: { name: "Dolphins", city: "Miami", logo: "/images/team-logos/MIA.png" },
+        status: "scheduled",
+        date: "2024-11-03",
+        time: "8:30 PM ET",
+      },
+
+      // Week 8
+      {
+        id: "w8-g1",
+        week: 8,
+        homeTeam: { name: "Jets", city: "New York", logo: "/images/team-logos/NYJ.png" },
+        awayTeam: { name: "Buccaneers", city: "Tampa Bay", logo: "/images/team-logos/TB.png" },
+        status: "scheduled",
+        date: "2024-11-05",
+        time: "8:15 PM ET",
+      },
+      {
+        id: "w8-g2",
+        week: 8,
+        homeTeam: { name: "49ers", city: "San Francisco", logo: "/images/team-logos/49ERS.png" },
+        awayTeam: { name: "Ravens", city: "Baltimore", logo: "/images/team-logos/BAL.png" },
+        status: "scheduled",
+        date: "2024-11-06",
+        time: "8:15 PM ET",
+      },
+      {
+        id: "w8-g3",
+        week: 8,
+        homeTeam: { name: "Rams", city: "Los Angeles", logo: "/images/team-logos/LAR.png" },
+        awayTeam: { name: "Bears", city: "Chicago", logo: "/images/team-logos/CHI.png" },
+        status: "scheduled",
+        date: "2024-11-08",
+        time: "1:00 PM ET",
+      },
+      {
+        id: "w8-g4",
+        week: 8,
+        homeTeam: { name: "Jaguars", city: "Jacksonville", logo: "/images/team-logos/JAX.png" },
+        awayTeam: { name: "Panthers", city: "Carolina", logo: "/images/team-logos/CAR.png" },
+        status: "scheduled",
+        date: "2024-11-09",
+        time: "8:30 PM ET",
+      },
+      {
+        id: "w8-g5",
+        week: 8,
+        homeTeam: { name: "Dolphins", city: "Miami", logo: "/images/team-logos/MIA.png" },
+        awayTeam: { name: "Chiefs", city: "Kansas City", logo: "/images/team-logos/KAN.png" },
+        status: "scheduled",
+        date: "2024-11-10",
+        time: "8:15 PM ET",
+      },
+
+      // Week 9
+      {
+        id: "w9-g1",
+        week: 9,
+        homeTeam: { name: "49ers", city: "San Francisco", logo: "/images/team-logos/49ERS.png" },
+        awayTeam: { name: "Jets", city: "New York", logo: "/images/team-logos/NYJ.png" },
+        status: "scheduled",
+        date: "2024-11-12",
+        time: "8:15 PM ET",
+      },
+      {
+        id: "w9-g2",
+        week: 9,
+        homeTeam: { name: "Dolphins", city: "Miami", logo: "/images/team-logos/MIA.png" },
+        awayTeam: { name: "Panthers", city: "Carolina", logo: "/images/team-logos/CAR.png" },
+        status: "scheduled",
+        date: "2024-11-13",
+        time: "8:30 PM ET",
+      },
+      {
+        id: "w9-g3",
+        week: 9,
+        homeTeam: { name: "Rams", city: "Los Angeles", logo: "/images/team-logos/LAR.png" },
+        awayTeam: { name: "Chiefs", city: "Kansas City", logo: "/images/team-logos/KAN.png" },
+        status: "scheduled",
+        date: "2024-11-15",
+        time: "1:00 PM ET",
+      },
+      {
+        id: "w9-g4",
+        week: 9,
+        homeTeam: { name: "Buccaneers", city: "Tampa Bay", logo: "/images/team-logos/TB.png" },
+        awayTeam: { name: "Jaguars", city: "Jacksonville", logo: "/images/team-logos/JAX.png" },
+        status: "scheduled",
+        date: "2024-11-16",
+        time: "8:20 PM ET",
+      },
+      {
+        id: "w9-g5",
+        week: 9,
+        homeTeam: { name: "Bears", city: "Chicago", logo: "/images/team-logos/CHI.png" },
+        awayTeam: { name: "Ravens", city: "Baltimore", logo: "/images/team-logos/BAL.png" },
+        status: "scheduled",
+        date: "2024-11-17",
+        time: "8:15 PM ET",
+      },
+
+      // Week 10
+      {
+        id: "w10-g1",
+        week: 10,
+        homeTeam: { name: "Buccaneers", city: "Tampa Bay", logo: "/images/team-logos/TB.png" },
+        awayTeam: { name: "Dolphins", city: "Miami", logo: "/images/team-logos/MIA.png" },
+        status: "scheduled",
+        date: "2024-11-19",
+        time: "8:15 PM ET",
+      },
+      {
+        id: "w10-g2",
+        week: 10,
+        homeTeam: { name: "Jets", city: "New York", logo: "/images/team-logos/NYJ.png" },
+        awayTeam: { name: "Bears", city: "Chicago", logo: "/images/team-logos/CHI.png" },
+        status: "scheduled",
+        date: "2024-11-20",
+        time: "8:15 PM ET",
+      },
+      {
+        id: "w10-g3",
+        week: 10,
+        homeTeam: { name: "Chiefs", city: "Kansas City", logo: "/images/team-logos/KAN.png" },
+        awayTeam: { name: "Panthers", city: "Carolina", logo: "/images/team-logos/CAR.png" },
+        status: "scheduled",
+        date: "2024-11-22",
+        time: "3:30 PM ET",
+      },
+      {
+        id: "w10-g4",
+        week: 10,
+        homeTeam: { name: "Ravens", city: "Baltimore", logo: "/images/team-logos/BAL.png" },
+        awayTeam: { name: "Rams", city: "Los Angeles", logo: "/images/team-logos/LAR.png" },
+        status: "scheduled",
+        date: "2024-11-23",
+        time: "8:20 PM ET",
+      },
+      {
+        id: "w10-g5",
+        week: 10,
+        homeTeam: { name: "Jaguars", city: "Jacksonville", logo: "/images/team-logos/JAX.png" },
+        awayTeam: { name: "49ers", city: "San Francisco", logo: "/images/team-logos/49ERS.png" },
+        status: "scheduled",
+        date: "2024-11-24",
+        time: "8:15 PM ET",
+      },
     ]
-    setGames(sampleGames)
+
+    setGames(allGames)
   }
 
   const handleEditGame = (game: Game) => {
@@ -193,8 +618,6 @@ export default function AdminGamesClient() {
     }
   }
 
-  const filteredGames = selectedWeek === "all" ? games : games.filter((game) => game.week.toString() === selectedWeek)
-
   const getStatusColor = (status: string) => {
     switch (status) {
       case "final":
@@ -208,7 +631,9 @@ export default function AdminGamesClient() {
     }
   }
 
-  const weeks = Array.from(new Set(games.map((game) => game.week))).sort((a, b) => a - b)
+  const getGamesByWeek = (week: number) => {
+    return games.filter((game) => game.week === week)
+  }
 
   if (isLoading) {
     return (
@@ -244,30 +669,12 @@ export default function AdminGamesClient() {
               </Link>
               <div>
                 <h1 className="text-2xl font-bold text-white">Game Management</h1>
-                <p className="text-gray-300">Manage game scores and schedules</p>
+                <p className="text-gray-300">Manage all games across 10 weeks of the season</p>
               </div>
             </div>
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <Filter className="w-4 h-4 text-stc-gold" />
-                <Select value={selectedWeek} onValueChange={setSelectedWeek}>
-                  <SelectTrigger className="w-32 bg-black/40 border-white/20 text-white">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="bg-black border-white/20">
-                    <SelectItem value="all">All Weeks</SelectItem>
-                    {weeks.map((week) => (
-                      <SelectItem key={week} value={week.toString()}>
-                        Week {week}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Calendar className="w-5 h-5 text-stc-gold" />
-                <span className="text-white font-medium">{filteredGames.length} Games</span>
-              </div>
+            <div className="flex items-center space-x-2">
+              <Calendar className="w-5 h-5 text-stc-gold" />
+              <span className="text-white font-medium">{games.length} Total Games</span>
             </div>
           </div>
         </div>
@@ -285,100 +692,118 @@ export default function AdminGamesClient() {
           </div>
         </div>
 
-        {/* Games Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {filteredGames.map((game, index) => (
-            <motion.div
-              key={game.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-            >
-              <Card className="bg-black/40 border-white/10 backdrop-blur-sm hover:bg-black/50 transition-colors">
-                <CardHeader className="pb-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <Trophy className="w-5 h-5 text-stc-gold" />
-                      <CardTitle className="text-white">Week {game.week}</CardTitle>
-                      <Badge className={getStatusColor(game.status)}>
-                        {game.status === "final" ? "Final" : game.status === "in-progress" ? "Live" : "Scheduled"}
-                      </Badge>
-                    </div>
-                    <Button
-                      onClick={() => handleEditGame(game)}
-                      size="sm"
-                      variant="outline"
-                      className="border-stc-gold/30 text-stc-gold hover:bg-stc-gold hover:text-black"
-                    >
-                      <Edit className="w-4 h-4" />
-                    </Button>
-                  </div>
-                  <CardDescription className="text-gray-400 flex items-center">
-                    <Calendar className="w-4 h-4 mr-2" />
-                    {new Date(game.date).toLocaleDateString()} at {game.time}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {/* Away Team */}
-                    <div className="flex items-center justify-between p-3 rounded-lg bg-gray-800/50">
-                      <div className="flex items-center space-x-3">
-                        <Image
-                          src={game.awayTeam.logo || "/placeholder.svg"}
-                          alt={`${game.awayTeam.name} logo`}
-                          width={32}
-                          height={32}
-                          className="rounded"
-                        />
-                        <span className="text-white font-medium">
-                          {game.awayTeam.city} {game.awayTeam.name}
-                        </span>
-                      </div>
-                      <div
-                        className={`text-2xl font-bold ${
-                          game.status === "final" && (game.awayScore ?? 0) > (game.homeScore ?? 0)
-                            ? "text-green-400"
-                            : "text-white"
-                        }`}
-                      >
-                        {game.awayScore ?? "-"}
-                      </div>
-                    </div>
+        {/* Week Tabs */}
+        <Tabs defaultValue="1" className="w-full" onValueChange={(value) => setActiveWeek(value)}>
+          <TabsList className="grid grid-cols-5 lg:grid-cols-10 mb-6 bg-black/40">
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((week) => (
+              <TabsTrigger
+                key={week}
+                value={week.toString()}
+                className="data-[state=active]:bg-stc-gold data-[state=active]:text-black text-white"
+              >
+                Week {week}
+              </TabsTrigger>
+            ))}
+          </TabsList>
 
-                    <div className="flex items-center justify-center">
-                      <span className="text-gray-500 text-sm">@</span>
-                    </div>
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((week) => (
+            <TabsContent key={week} value={week.toString()}>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {getGamesByWeek(week).map((game, index) => (
+                  <motion.div
+                    key={game.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    <Card className="bg-black/40 border-white/10 backdrop-blur-sm hover:bg-black/50 transition-colors">
+                      <CardHeader className="pb-4">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-2">
+                            <Trophy className="w-5 h-5 text-stc-gold" />
+                            <CardTitle className="text-white">Week {game.week}</CardTitle>
+                            <Badge className={getStatusColor(game.status)}>
+                              {game.status === "final" ? "Final" : game.status === "in-progress" ? "Live" : "Scheduled"}
+                            </Badge>
+                          </div>
+                          <Button
+                            onClick={() => handleEditGame(game)}
+                            size="sm"
+                            variant="outline"
+                            className="border-stc-gold/30 text-stc-gold hover:bg-stc-gold hover:text-black"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                        </div>
+                        <CardDescription className="text-gray-400 flex items-center">
+                          <Calendar className="w-4 h-4 mr-2" />
+                          {new Date(game.date).toLocaleDateString()} at {game.time}
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-4">
+                          {/* Away Team */}
+                          <div className="flex items-center justify-between p-3 rounded-lg bg-gray-800/50">
+                            <div className="flex items-center space-x-3">
+                              <Image
+                                src={game.awayTeam.logo || "/placeholder.svg"}
+                                alt={`${game.awayTeam.name} logo`}
+                                width={32}
+                                height={32}
+                                className="rounded"
+                              />
+                              <span className="text-white font-medium">
+                                {game.awayTeam.city} {game.awayTeam.name}
+                              </span>
+                            </div>
+                            <div
+                              className={`text-2xl font-bold ${
+                                game.status === "final" && (game.awayScore ?? 0) > (game.homeScore ?? 0)
+                                  ? "text-green-400"
+                                  : "text-white"
+                              }`}
+                            >
+                              {game.awayScore ?? "-"}
+                            </div>
+                          </div>
 
-                    {/* Home Team */}
-                    <div className="flex items-center justify-between p-3 rounded-lg bg-gray-800/50">
-                      <div className="flex items-center space-x-3">
-                        <Image
-                          src={game.homeTeam.logo || "/placeholder.svg"}
-                          alt={`${game.homeTeam.name} logo`}
-                          width={32}
-                          height={32}
-                          className="rounded"
-                        />
-                        <span className="text-white font-medium">
-                          {game.homeTeam.city} {game.homeTeam.name}
-                        </span>
-                      </div>
-                      <div
-                        className={`text-2xl font-bold ${
-                          game.status === "final" && (game.homeScore ?? 0) > (game.awayScore ?? 0)
-                            ? "text-green-400"
-                            : "text-white"
-                        }`}
-                      >
-                        {game.homeScore ?? "-"}
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
+                          <div className="flex items-center justify-center">
+                            <span className="text-gray-500 text-sm">@</span>
+                          </div>
+
+                          {/* Home Team */}
+                          <div className="flex items-center justify-between p-3 rounded-lg bg-gray-800/50">
+                            <div className="flex items-center space-x-3">
+                              <Image
+                                src={game.homeTeam.logo || "/placeholder.svg"}
+                                alt={`${game.homeTeam.name} logo`}
+                                width={32}
+                                height={32}
+                                className="rounded"
+                              />
+                              <span className="text-white font-medium">
+                                {game.homeTeam.city} {game.homeTeam.name}
+                              </span>
+                            </div>
+                            <div
+                              className={`text-2xl font-bold ${
+                                game.status === "final" && (game.homeScore ?? 0) > (game.awayScore ?? 0)
+                                  ? "text-green-400"
+                                  : "text-white"
+                              }`}
+                            >
+                              {game.homeScore ?? "-"}
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
+            </TabsContent>
           ))}
-        </div>
+        </Tabs>
 
         {/* Edit Game Dialog */}
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

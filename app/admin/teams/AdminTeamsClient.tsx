@@ -1,5 +1,7 @@
 "use client"
 
+import type React from "react"
+
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -11,7 +13,7 @@ import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { motion } from "framer-motion"
-import { ArrowLeft, Edit, Save, Users } from "lucide-react"
+import { ArrowLeft, Edit, Save, Users, Upload } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 
@@ -33,6 +35,8 @@ export default function AdminTeamsClient() {
   const [teams, setTeams] = useState<Team[]>([])
   const [editingTeam, setEditingTeam] = useState<Team | null>(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [logoFile, setLogoFile] = useState<File | null>(null)
+  const [logoPreview, setLogoPreview] = useState<string>("")
 
   useEffect(() => {
     const checkAuth = () => {
@@ -59,7 +63,7 @@ export default function AdminTeamsClient() {
         city: "Baltimore",
         logo: "/images/team-logos/BAL.png",
         conference: "AFC",
-        wins: 0,
+        wins: 2,
         losses: 0,
         description: "A strong defensive team with championship aspirations.",
       },
@@ -69,7 +73,7 @@ export default function AdminTeamsClient() {
         city: "Kansas City",
         logo: "/images/team-logos/KAN.png",
         conference: "AFC",
-        wins: 0,
+        wins: 2,
         losses: 0,
         description: "The defending champions with explosive offensive potential.",
       },
@@ -79,7 +83,7 @@ export default function AdminTeamsClient() {
         city: "New York",
         logo: "/images/team-logos/NYJ.png",
         conference: "AFC",
-        wins: 0,
+        wins: 2,
         losses: 0,
         description: "A young team building around a talented core.",
       },
@@ -89,8 +93,8 @@ export default function AdminTeamsClient() {
         city: "Miami",
         logo: "/images/team-logos/MIA.png",
         conference: "AFC",
-        wins: 0,
-        losses: 0,
+        wins: 1,
+        losses: 1,
         description: "Fast-paced offense with a dynamic quarterback.",
       },
       {
@@ -99,8 +103,8 @@ export default function AdminTeamsClient() {
         city: "Jacksonville",
         logo: "/images/team-logos/JAX.png",
         conference: "AFC",
-        wins: 0,
-        losses: 0,
+        wins: 1,
+        losses: 1,
         description: "An up-and-coming team with a bright future.",
       },
       // NFC Teams
@@ -110,8 +114,8 @@ export default function AdminTeamsClient() {
         city: "San Francisco",
         logo: "/images/team-logos/49ERS.png",
         conference: "NFC",
-        wins: 0,
-        losses: 0,
+        wins: 1,
+        losses: 1,
         description: "A powerhouse team with championship experience.",
       },
       {
@@ -121,7 +125,7 @@ export default function AdminTeamsClient() {
         logo: "/images/team-logos/LAR.png",
         conference: "NFC",
         wins: 0,
-        losses: 0,
+        losses: 2,
         description: "High-powered offense with elite playmakers.",
       },
       {
@@ -131,7 +135,7 @@ export default function AdminTeamsClient() {
         logo: "/images/team-logos/CHI.png",
         conference: "NFC",
         wins: 0,
-        losses: 0,
+        losses: 2,
         description: "Historic franchise with a strong defensive tradition.",
       },
       {
@@ -141,7 +145,7 @@ export default function AdminTeamsClient() {
         logo: "/images/team-logos/TB.png",
         conference: "NFC",
         wins: 0,
-        losses: 0,
+        losses: 1,
         description: "Championship contenders with veteran leadership.",
       },
       {
@@ -151,7 +155,7 @@ export default function AdminTeamsClient() {
         logo: "/images/team-logos/CAR.png",
         conference: "NFC",
         wins: 0,
-        losses: 0,
+        losses: 1,
         description: "Rebuilding team with young talent and potential.",
       },
     ]
@@ -160,14 +164,36 @@ export default function AdminTeamsClient() {
 
   const handleEditTeam = (team: Team) => {
     setEditingTeam({ ...team })
+    setLogoPreview(team.logo)
+    setLogoFile(null)
     setIsDialogOpen(true)
+  }
+
+  const handleLogoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      setLogoFile(file)
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        setLogoPreview(e.target?.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
   }
 
   const handleSaveTeam = () => {
     if (editingTeam) {
+      // In a real app, you would upload the logo file to a server
+      // For demo purposes, we'll use the preview URL
+      if (logoFile && logoPreview) {
+        editingTeam.logo = logoPreview
+      }
+
       setTeams(teams.map((team) => (team.id === editingTeam.id ? editingTeam : team)))
       setIsDialogOpen(false)
       setEditingTeam(null)
+      setLogoFile(null)
+      setLogoPreview("")
     }
   }
 
@@ -211,7 +237,7 @@ export default function AdminTeamsClient() {
               </Link>
               <div>
                 <h1 className="text-2xl font-bold text-white">Team Management</h1>
-                <p className="text-gray-300">Manage team information and records</p>
+                <p className="text-gray-300">Manage team information, records, and logos</p>
               </div>
             </div>
             <div className="flex items-center space-x-2">
@@ -236,13 +262,14 @@ export default function AdminTeamsClient() {
                 <CardHeader className="pb-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
-                      <Image
-                        src={team.logo || "/placeholder.svg"}
-                        alt={`${team.city} ${team.name} logo`}
-                        width={48}
-                        height={48}
-                        className="rounded"
-                      />
+                      <div className="w-12 h-12 relative">
+                        <Image
+                          src={team.logo || "/placeholder.svg"}
+                          alt={`${team.city} ${team.name} logo`}
+                          fill
+                          className="object-contain rounded"
+                        />
+                      </div>
                       <div>
                         <CardTitle className="text-white">
                           {team.city} {team.name}
@@ -305,13 +332,46 @@ export default function AdminTeamsClient() {
 
         {/* Edit Team Dialog */}
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogContent className="bg-black border-white/20 text-white max-w-md">
+          <DialogContent className="bg-black border-white/20 text-white max-w-md max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Edit Team</DialogTitle>
-              <DialogDescription className="text-gray-400">Update team information and records</DialogDescription>
+              <DialogDescription className="text-gray-400">
+                Update team information, records, and logo
+              </DialogDescription>
             </DialogHeader>
             {editingTeam && (
               <div className="space-y-4">
+                {/* Logo Upload Section */}
+                <div className="space-y-3">
+                  <Label className="text-gray-300">Team Logo</Label>
+                  <div className="flex items-center space-x-4">
+                    <div className="w-16 h-16 relative bg-gray-800 rounded-lg overflow-hidden">
+                      <Image
+                        src={logoPreview || editingTeam.logo || "/placeholder.svg"}
+                        alt="Team logo preview"
+                        fill
+                        className="object-contain"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <Label htmlFor="logo-upload" className="cursor-pointer">
+                        <div className="flex items-center space-x-2 px-3 py-2 bg-gray-800 border border-gray-600 rounded-md hover:bg-gray-700 transition-colors">
+                          <Upload className="w-4 h-4" />
+                          <span className="text-sm">Upload New Logo</span>
+                        </div>
+                      </Label>
+                      <Input
+                        id="logo-upload"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleLogoChange}
+                        className="hidden"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">PNG, JPG up to 2MB</p>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="city" className="text-gray-300">
