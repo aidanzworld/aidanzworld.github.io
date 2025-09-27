@@ -2,12 +2,8 @@ import type { Metadata } from "next"
 import AdminDashboardClient from "./AdminDashboardClient"
 
 export const metadata: Metadata = {
-  title: "Admin Dashboard | Sports Talk Club",
-  description: "Admin dashboard for Sports Talk Club management",
-  robots: {
-    index: false,
-    follow: false,
-  },
+  title: "Admin Dashboard - STC League",
+  description: "Admin dashboard for managing the STC League",
 }
 
 export default function AdminDashboardPage() {
