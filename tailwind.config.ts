@@ -26,7 +26,7 @@ const config = {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "#e11d48", // Red-600
+          DEFAULT: "#DC2626", // Red-600
           foreground: "#ffffff",
         },
         secondary: {
@@ -34,7 +34,7 @@ const config = {
           foreground: "#ffffff",
         },
         accent: {
-          DEFAULT: "#eab308", // Yellow-500
+          DEFAULT: "#D97706", // Amber-600 (Gold)
           foreground: "#000000",
         },
         destructive: {
@@ -52,6 +52,14 @@ const config = {
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
+        },
+        // Custom STC colors
+        stc: {
+          red: "#DC2626",
+          black: "#000000",
+          gold: "#D97706",
+          "red-dark": "#B91C1C",
+          "gold-light": "#F59E0B",
         },
       },
       borderRadius: {

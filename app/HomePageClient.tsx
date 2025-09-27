@@ -1,301 +1,326 @@
 "use client"
 
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Trophy, Users, BarChart3 } from "lucide-react"
-import Image from "next/image"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { useEffect, useState } from "react"
-import { getLatestNews } from "@/lib/news-data"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Calendar, Trophy, Users, TrendingUp, Clock } from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
 
-// Animation variants
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      when: "beforeChildren",
-      staggerChildren: 0.1,
-    },
+// Mock data - in real app this would come from API
+const featuredNews = [
+  {
+    id: 1,
+    title: "Season 14 Kicks Off with Exciting Matchups",
+    excerpt: "The Sports Talk Club enters its 14th season with 10 competitive teams ready for action.",
+    image: "/images/news/season-14-kickoff.jpg",
+    date: "2024-01-15",
+    category: "Season News",
   },
-}
+  {
+    id: 2,
+    title: "New Team Additions Shake Up League",
+    excerpt: "Two new franchises join the STC, bringing fresh talent and competition to the league.",
+    image: "/images/news/new-teams.jpg",
+    date: "2024-01-12",
+    category: "League News",
+  },
+]
 
-const itemVariants = {
-  hidden: { y: 20, opacity: 0 },
-  visible: {
-    y: 0,
-    opacity: 1,
-    transition: {
-      type: "spring",
-      stiffness: 100,
-      damping: 12,
-    },
+const upcomingGames = [
+  {
+    id: 1,
+    homeTeam: "Ravens",
+    awayTeam: "Cardinals",
+    homeTeamLogo: "/images/team-logos/BAL.png",
+    awayTeamLogo: "/images/team-logos/ARI.png",
+    date: "2024-01-20",
+    time: "8:00 PM EST",
+    week: "Week 1",
   },
-}
+  {
+    id: 2,
+    homeTeam: "Lions",
+    awayTeam: "Packers",
+    homeTeamLogo: "/images/team-logos/DET.png",
+    awayTeamLogo: "/images/team-logos/GB.png",
+    date: "2024-01-21",
+    time: "3:00 PM EST",
+    week: "Week 1",
+  },
+]
+
+const standings = [
+  { team: "Ravens", wins: 0, losses: 0, logo: "/images/team-logos/BAL.png" },
+  { team: "Cardinals", wins: 0, losses: 0, logo: "/images/team-logos/ARI.png" },
+  { team: "Lions", wins: 0, losses: 0, logo: "/images/team-logos/DET.png" },
+  { team: "Packers", wins: 0, losses: 0, logo: "/images/team-logos/GB.png" },
+  { team: "Bears", wins: 0, losses: 0, logo: "/images/team-logos/CHI.png" },
+]
 
 export default function HomePageClient() {
   const [isClient, setIsClient] = useState(false)
-  const [latestNews, setLatestNews] = useState([])
 
   useEffect(() => {
     setIsClient(true)
-    setLatestNews(getLatestNews(2))
   }, [])
 
   if (!isClient) {
-    return null // Prevent SSR flash
+    return null
   }
 
   return (
-    <>
+    <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <motion.section
-        className="bg-gradient-to-r from-[#CE1126] to-[#CE1126] text-white py-16"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-      >
-        <div className="container mx-auto px-4 text-center">
-          <motion.h1
-            className="text-4xl md:text-6xl font-bold mb-4"
-            initial={{ y: -50, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-          >
-            The Sports Talk Club
-          </motion.h1>
-          <motion.p
-            className="text-xl mb-8"
-            initial={{ y: 50, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
-          >
-            Season 13 - The premier football experience on Roblox
-          </motion.p>
-          <motion.div
-            className="flex flex-wrap justify-center gap-4"
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.6, duration: 0.5 }}
-          >
-            <Button className="bg-yellow-400 hover:bg-yellow-500 text-black">
-              <Link href="/teams">View Teams</Link>
-            </Button>
-            <Button variant="outline" className="border-white text-black hover:bg-white hover:text-[#CE1126]">
-              <Link href="/playoffs" className="text-black hover:text-[#CE1126]">
-                Playoffs Coming Soon
-              </Link>
-            </Button>
-          </motion.div>
-        </div>
-      </motion.section>
-
-      {/* Featured Content */}
-      <section className="py-12 bg-white">
+      <section className="bg-gradient-to-r from-stc-red via-black to-stc-gold text-white py-16">
         <div className="container mx-auto px-4">
-          <motion.h2
-            className="text-3xl font-bold text-center mb-10 text-black"
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.8 }}
+            className="text-center"
           >
-            Featured Content
-          </motion.h2>
-          <motion.div
-            className="grid grid-cols-1 md:grid-cols-3 gap-8"
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-          >
-            <motion.div className="bg-gray-100 rounded-lg overflow-hidden shadow-lg" variants={itemVariants}>
-              <div className="h-48 bg-[#CE1126] flex items-center justify-center">
-                <Trophy className="h-20 w-20 text-yellow-400" />
+            <h1 className="text-4xl md:text-6xl font-bold mb-4">SEASON 14</h1>
+            <p className="text-xl md:text-2xl mb-8 text-gray-200">The Sports Talk Club Returns with 10 Elite Teams</p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button size="lg" className="bg-white text-black hover:bg-gray-100">
+                <Calendar className="mr-2 h-5 w-5" />
+                View Schedule
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-white text-white hover:bg-white hover:text-black bg-transparent"
+              >
+                <Trophy className="mr-2 h-5 w-5" />
+                Standings
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      <div className="container mx-auto px-4 py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main Content */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* Featured News */}
+            <section>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-3xl font-bold text-black">LATEST NEWS</h2>
+                <Link href="/news">
+                  <Button
+                    variant="outline"
+                    className="border-stc-red text-stc-red hover:bg-stc-red hover:text-white bg-transparent"
+                  >
+                    View All News
+                  </Button>
+                </Link>
               </div>
-              <div className="p-6">
-                <h3 className="text-xl font-bold mb-2 text-black">Playoffs Coming Soon</h3>
-                <p className="text-gray-700 mb-4">
-                  Stay tuned for the Season 13 playoff picture as the season progresses.
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {featuredNews.map((article, index) => (
+                  <motion.div
+                    key={article.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    <Card className="hover:shadow-lg transition-shadow overflow-hidden">
+                      <div className="aspect-video bg-gray-200 relative">
+                        <Image
+                          src={article.image || "/placeholder.svg?height=200&width=400"}
+                          alt={article.title}
+                          fill
+                          className="object-cover"
+                        />
+                        <div className="absolute top-4 left-4">
+                          <Badge className="bg-stc-red text-white">{article.category}</Badge>
+                        </div>
+                      </div>
+                      <CardContent className="p-6">
+                        <h3 className="font-bold text-lg mb-2 line-clamp-2">{article.title}</h3>
+                        <p className="text-gray-600 text-sm mb-4 line-clamp-3">{article.excerpt}</p>
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-gray-500">{new Date(article.date).toLocaleDateString()}</span>
+                          <Link href={`/news/${article.id}`}>
+                            <Button size="sm" variant="outline">
+                              Read More
+                            </Button>
+                          </Link>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
+            </section>
+
+            {/* Upcoming Games */}
+            <section>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-3xl font-bold text-black">UPCOMING GAMES</h2>
+                <Link href="/schedule">
+                  <Button
+                    variant="outline"
+                    className="border-stc-red text-stc-red hover:bg-stc-red hover:text-white bg-transparent"
+                  >
+                    Full Schedule
+                  </Button>
+                </Link>
+              </div>
+
+              <div className="space-y-4">
+                {upcomingGames.map((game, index) => (
+                  <motion.div
+                    key={game.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    <Card className="hover:shadow-lg transition-shadow">
+                      <CardContent className="p-6">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-4">
+                            <Badge variant="outline" className="text-stc-red border-stc-red">
+                              {game.week}
+                            </Badge>
+                            <div className="flex items-center space-x-6">
+                              {/* Away Team */}
+                              <div className="flex items-center space-x-3">
+                                <Image
+                                  src={game.awayTeamLogo || "/placeholder.svg"}
+                                  alt={game.awayTeam}
+                                  width={40}
+                                  height={40}
+                                  className="rounded"
+                                />
+                                <span className="font-bold">{game.awayTeam}</span>
+                              </div>
+                              <span className="text-gray-500 font-bold">@</span>
+                              {/* Home Team */}
+                              <div className="flex items-center space-x-3">
+                                <Image
+                                  src={game.homeTeamLogo || "/placeholder.svg"}
+                                  alt={game.homeTeam}
+                                  width={40}
+                                  height={40}
+                                  className="rounded"
+                                />
+                                <span className="font-bold">{game.homeTeam}</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="flex items-center text-gray-600 mb-1">
+                              <Clock className="h-4 w-4 mr-1" />
+                              <span className="text-sm">{game.time}</span>
+                            </div>
+                            <div className="flex items-center text-gray-600">
+                              <Calendar className="h-4 w-4 mr-1" />
+                              <span className="text-sm">{new Date(game.date).toLocaleDateString()}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
+            </section>
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-8">
+            {/* Quick Stats */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl font-bold text-black">SEASON 14 STATS</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <Users className="h-5 w-5 text-stc-red" />
+                      <span className="font-medium">Teams</span>
+                    </div>
+                    <span className="font-bold text-2xl">10</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <Trophy className="h-5 w-5 text-stc-gold" />
+                      <span className="font-medium">Games Played</span>
+                    </div>
+                    <span className="font-bold text-2xl">0</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <TrendingUp className="h-5 w-5 text-black" />
+                      <span className="font-medium">Total Players</span>
+                    </div>
+                    <span className="font-bold text-2xl">120+</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Standings Preview */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl font-bold text-black">STANDINGS</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {standings.slice(0, 5).map((team, index) => (
+                    <div key={team.team} className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <span className="text-sm font-bold text-gray-500 w-4">{index + 1}</span>
+                        <Image
+                          src={team.logo || "/placeholder.svg"}
+                          alt={team.team}
+                          width={24}
+                          height={24}
+                          className="rounded"
+                        />
+                        <span className="font-medium">{team.team}</span>
+                      </div>
+                      <span className="text-sm font-bold">
+                        {team.wins}-{team.losses}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-4">
+                  <Link href="/standings">
+                    <Button variant="outline" size="sm" className="w-full bg-transparent">
+                      View Full Standings
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* League Info */}
+            <Card className="bg-gradient-to-br from-stc-red to-black text-white">
+              <CardContent className="p-6">
+                <h3 className="font-bold text-lg mb-2">Season 14 Championship</h3>
+                <p className="text-sm text-gray-200 mb-4">
+                  10 teams compete for the ultimate prize in our most competitive season yet.
                 </p>
                 <Button
                   variant="outline"
-                  className="w-full border-[#CE1126] text-[#CE1126] hover:bg-[#CE1126] hover:text-white"
+                  size="sm"
+                  className="border-white text-white hover:bg-white hover:text-black bg-transparent"
                 >
-                  <Link href="/playoffs">View Playoffs</Link>
+                  Learn More
                 </Button>
-              </div>
-            </motion.div>
-
-            <motion.div className="bg-gray-100 rounded-lg overflow-hidden shadow-lg" variants={itemVariants}>
-              <div className="h-48 bg-black flex items-center justify-center">
-                <BarChart3 className="h-20 w-20 text-yellow-400" />
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-bold mb-2 text-black">League Leaders</h3>
-                <p className="text-gray-700 mb-4">Explore the top performers in various statistical categories.</p>
-                <Button
-                  variant="outline"
-                  className="w-full border-[#CE1126] text-[#CE1126] hover:bg-[#CE1126] hover:text-white"
-                >
-                  <Link href="/stats">View Stats</Link>
-                </Button>
-              </div>
-            </motion.div>
-
-            <motion.div className="bg-gray-100 rounded-lg overflow-hidden shadow-lg" variants={itemVariants}>
-              <div className="h-48 bg-[#CE1126] flex items-center justify-center">
-                <Users className="h-20 w-20 text-yellow-400" />
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-bold mb-2 text-black">Conference Battles</h3>
-                <p className="text-gray-700 mb-4">See which conference is dominating this season.</p>
-                <Button
-                  variant="outline"
-                  className="w-full border-[#CE1126] text-[#CE1126] hover:bg-[#CE1126] hover:text-white"
-                >
-                  <Link href="/standings">View Standings</Link>
-                </Button>
-              </div>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Quick Links */}
-      <section className="py-12 bg-gray-100">
-        <div className="container mx-auto px-4">
-          <motion.h2
-            className="text-3xl font-bold text-center mb-10 text-black"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            Quick Links
-          </motion.h2>
-          <motion.div
-            className="grid grid-cols-2 md:grid-cols-5 gap-4"
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-          >
-            <motion.div variants={itemVariants}>
-              <Link
-                href="/teams"
-                className="bg-[#CE1126] text-white p-6 rounded-lg text-center hover:bg-red-700 transition duration-200 block"
-              >
-                <Users className="h-10 w-10 mx-auto mb-2" />
-                <span className="font-bold">Teams</span>
-              </Link>
-            </motion.div>
-
-            <motion.div variants={itemVariants}>
-              <Link
-                href="/standings"
-                className="bg-black text-white p-6 rounded-lg text-center hover:bg-gray-900 transition duration-200 block"
-              >
-                <BarChart3 className="h-10 w-10 mx-auto mb-2" />
-                <span className="font-bold">Standings</span>
-              </Link>
-            </motion.div>
-
-            <motion.div variants={itemVariants}>
-              <Link
-                href="/stats"
-                className="bg-yellow-400 text-black p-6 rounded-lg text-center hover:bg-yellow-500 transition duration-200 block"
-              >
-                <BarChart3 className="h-10 w-10 mx-auto mb-2" />
-                <span className="font-bold">Stats</span>
-              </Link>
-            </motion.div>
-
-            <motion.div variants={itemVariants}>
-              <Link
-                href="/playoffs"
-                className="bg-[#CE1126] text-white p-6 rounded-lg text-center hover:bg-red-900 transition duration-200 block"
-              >
-                <Trophy className="h-10 w-10 mx-auto mb-2" />
-                <span className="font-bold">Playoffs</span>
-              </Link>
-            </motion.div>
-            <motion.div variants={itemVariants}>
-              <Link
-                href="/schedule"
-                className="bg-blue-600 text-white p-6 rounded-lg text-center hover:bg-blue-700 transition duration-200 block"
-              >
-                <BarChart3 className="h-10 w-10 mx-auto mb-2" />
-                <span className="font-bold">Schedule</span>
-              </Link>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Latest News */}
-      <section className="py-12 bg-white">
-        <div className="container mx-auto px-4">
-          <motion.h2
-            className="text-3xl font-bold text-center mb-10 text-black"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            Latest League News
-          </motion.h2>
-          <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 gap-8"
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-          >
-            {latestNews.map((news, index) => (
-              <motion.div
-                key={news.id}
-                className="border border-gray-200 rounded-lg overflow-hidden shadow-lg"
-                variants={itemVariants}
-              >
-                <div className="h-48 bg-gray-200 relative">
-                  <Image src={news.image || "/placeholder.svg"} alt={news.title} fill className="object-cover" />
-                </div>
-                <div className="p-6">
-                  <div className="flex items-center mb-2">
-                    <span
-                      className={`inline-block ${
-                        news.category === "breaking"
-                          ? "bg-[#CE1126] text-white"
-                          : news.category === "player"
-                            ? "bg-yellow-400 text-black"
-                            : news.category === "team"
-                              ? "bg-[#003B66] text-white"
-                              : "bg-green-500 text-white"
-                      } px-3 py-1 text-sm font-semibold rounded-full mr-2`}
-                    >
-                      {news.category === "breaking"
-                        ? "Breaking News"
-                        : news.category === "player"
-                          ? "Player Spotlight"
-                          : news.category === "team"
-                            ? "Team Update"
-                            : "Event"}
-                    </span>
-                    <span className="text-sm text-gray-500">{news.date}</span>
-                  </div>
-                  <h3 className="text-xl font-bold mb-2 text-black">{news.title}</h3>
-                  <p className="text-gray-700 mb-4">{news.excerpt}</p>
-                  <Link href={`/news/${news.slug}`}>
-                    <Button className="bg-black hover:bg-gray-800 text-white">Read More</Button>
-                  </Link>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-          <div className="text-center mt-8">
-            <Link href="/news">
-              <Button variant="outline" className="border-[#CE1126] text-[#CE1126] hover:bg-[#CE1126] hover:text-white">
-                View All News
-              </Button>
-            </Link>
+              </CardContent>
+            </Card>
           </div>
         </div>
-      </section>
-    </>
+      </div>
+    </div>
   )
 }
