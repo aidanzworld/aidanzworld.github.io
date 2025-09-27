@@ -14,6 +14,7 @@ import { motion } from "framer-motion"
 import { ArrowLeft, Edit, Save, Calendar, Trophy, RefreshCw } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
+import { getTeams, calculateTeamStats } from "@/lib/team-data"
 
 interface Game {
   id: string
@@ -565,7 +566,8 @@ export default function AdminGamesClient() {
       }
 
       // Update local games state
-      setGames(games.map((game) => (game.id === editingGame.id ? editingGame : game)))
+      const updatedGames = games.map((game) => (game.id === editingGame.id ? editingGame : game))
+      setGames(updatedGames)
 
       // Save to localStorage to sync with public schedule
       const savedScores = localStorage.getItem("stc-game-scores")
@@ -595,6 +597,9 @@ export default function AdminGamesClient() {
       }
 
       localStorage.setItem("stc-game-scores", JSON.stringify(allScores))
+
+      // Update team stats based on game results
+      updateTeamStatsFromGames()
 
       setIsDialogOpen(false)
       setEditingGame(null)
@@ -633,6 +638,15 @@ export default function AdminGamesClient() {
 
   const getGamesByWeek = (week: number) => {
     return games.filter((game) => game.week === week)
+  }
+
+  const updateTeamStatsFromGames = () => {
+    const teams = getTeams()
+    const updatedTeams = calculateTeamStats(teams, games)
+    localStorage.setItem("stc-teams", JSON.stringify(updatedTeams))
+
+    // Trigger update event
+    window.dispatchEvent(new Event("stc-teams-updated"))
   }
 
   if (isLoading) {

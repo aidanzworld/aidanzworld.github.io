@@ -8,188 +8,7 @@ import { Button } from "@/components/ui/button"
 import Image from "next/image"
 import Link from "next/link"
 import { Trophy, Users, MapPin, Calendar } from "lucide-react"
-
-interface Team {
-  id: string
-  name: string
-  city: string
-  logo: string
-  conference: string
-  division: string
-  record: {
-    wins: number
-    losses: number
-  }
-  lastGame?: {
-    opponent: string
-    result: "W" | "L"
-    score: string
-  }
-  nextGame?: {
-    opponent: string
-    date: string
-  }
-  description: string
-  founded: number
-  stadium: string
-  colors: {
-    primary: string
-    secondary: string
-  }
-}
-
-const teams: Team[] = [
-  {
-    id: "ravens",
-    name: "Ravens",
-    city: "Baltimore",
-    logo: "/images/team-logos/BAL.png",
-    conference: "AFC",
-    division: "North",
-    record: { wins: 2, losses: 0 },
-    lastGame: { opponent: "Buccaneers", result: "W", score: "35-10" },
-    nextGame: { opponent: "vs Jets", date: "Oct 5" },
-    description: "The Baltimore Ravens are known for their dominant defense and strong running game.",
-    founded: 1996,
-    stadium: "M&T Bank Stadium",
-    colors: { primary: "#241773", secondary: "#000000" },
-  },
-  {
-    id: "chiefs",
-    name: "Chiefs",
-    city: "Kansas City",
-    logo: "/images/team-logos/KAN.png",
-    conference: "AFC",
-    division: "West",
-    record: { wins: 2, losses: 0 },
-    lastGame: { opponent: "Ravens", result: "W", score: "31-28" },
-    nextGame: { opponent: "vs Buccaneers", date: "Oct 6" },
-    description: "The Kansas City Chiefs are the defending champions with explosive offensive capabilities.",
-    founded: 1960,
-    stadium: "Arrowhead Stadium",
-    colors: { primary: "#E31837", secondary: "#FFB81C" },
-  },
-  {
-    id: "dolphins",
-    name: "Dolphins",
-    city: "Miami",
-    logo: "/images/team-logos/MIA.png",
-    conference: "AFC",
-    division: "East",
-    record: { wins: 1, losses: 1 },
-    lastGame: { opponent: "49ers", result: "W", score: "27-24" },
-    nextGame: { opponent: "vs Bears", date: "Oct 1" },
-    description: "The Miami Dolphins bring speed and precision to every game with their dynamic offense.",
-    founded: 1966,
-    stadium: "Hard Rock Stadium",
-    colors: { primary: "#008E97", secondary: "#FC4C02" },
-  },
-  {
-    id: "49ers",
-    name: "49ers",
-    city: "San Francisco",
-    logo: "/images/team-logos/49ERS.png",
-    conference: "NFC",
-    division: "West",
-    record: { wins: 1, losses: 1 },
-    lastGame: { opponent: "Dolphins", result: "L", score: "24-27" },
-    nextGame: { opponent: "vs Panthers", date: "Oct 4" },
-    description: "The San Francisco 49ers combine tradition with innovation in their pursuit of excellence.",
-    founded: 1946,
-    stadium: "Levi's Stadium",
-    colors: { primary: "#AA0000", secondary: "#B3995D" },
-  },
-  {
-    id: "jets",
-    name: "Jets",
-    city: "New York",
-    logo: "/images/team-logos/NYJ.png",
-    conference: "AFC",
-    division: "East",
-    record: { wins: 2, losses: 0 },
-    lastGame: { opponent: "Rams", result: "W", score: "21-17" },
-    nextGame: { opponent: "vs Ravens", date: "Oct 5" },
-    description: "The New York Jets are building momentum with their young, talented roster.",
-    founded: 1960,
-    stadium: "MetLife Stadium",
-    colors: { primary: "#125740", secondary: "#000000" },
-  },
-  {
-    id: "jaguars",
-    name: "Jaguars",
-    city: "Jacksonville",
-    logo: "/images/team-logos/JAX.png",
-    conference: "AFC",
-    division: "South",
-    record: { wins: 1, losses: 1 },
-    lastGame: { opponent: "Dolphins", result: "W", score: "21-17" },
-    nextGame: { opponent: "vs Rams", date: "Oct 2" },
-    description: "The Jacksonville Jaguars are a young team with tremendous upside and potential.",
-    founded: 1995,
-    stadium: "TIAA Bank Field",
-    colors: { primary: "#006778", secondary: "#9F792C" },
-  },
-  {
-    id: "rams",
-    name: "Rams",
-    city: "Los Angeles",
-    logo: "/images/team-logos/LAR.png",
-    conference: "NFC",
-    division: "West",
-    record: { wins: 0, losses: 2 },
-    lastGame: { opponent: "Jets", result: "L", score: "17-21" },
-    nextGame: { opponent: "vs Jaguars", date: "Oct 2" },
-    description: "The Los Angeles Rams bring Hollywood flair and championship experience to the field.",
-    founded: 1936,
-    stadium: "SoFi Stadium",
-    colors: { primary: "#003594", secondary: "#FFA300" },
-  },
-  {
-    id: "bears",
-    name: "Bears",
-    city: "Chicago",
-    logo: "/images/team-logos/CHI.png",
-    conference: "NFC",
-    division: "North",
-    record: { wins: 0, losses: 2 },
-    lastGame: { opponent: "Chiefs", result: "L", score: "14-28" },
-    nextGame: { opponent: "vs Dolphins", date: "Oct 1" },
-    description: "The Chicago Bears are a storied franchise with a rich history and passionate fanbase.",
-    founded: 1920,
-    stadium: "Soldier Field",
-    colors: { primary: "#0B162A", secondary: "#C83803" },
-  },
-  {
-    id: "buccaneers",
-    name: "Buccaneers",
-    city: "Tampa Bay",
-    logo: "/images/team-logos/TB.png",
-    conference: "NFC",
-    division: "South",
-    record: { wins: 0, losses: 1 },
-    lastGame: { opponent: "Ravens", result: "L", score: "10-35" },
-    nextGame: { opponent: "vs Chiefs", date: "Oct 6" },
-    description: "The Tampa Bay Buccaneers are known for their aggressive style and championship pedigree.",
-    founded: 1976,
-    stadium: "Raymond James Stadium",
-    colors: { primary: "#D50A0A", secondary: "#FF7900" },
-  },
-  {
-    id: "panthers",
-    name: "Panthers",
-    city: "Carolina",
-    logo: "/images/team-logos/CAR.png",
-    conference: "NFC",
-    division: "South",
-    record: { wins: 0, losses: 1 },
-    lastGame: { opponent: "Jets", result: "L", score: "13-20" },
-    nextGame: { opponent: "vs 49ers", date: "Oct 4" },
-    description: "The Carolina Panthers are building a new identity with young talent and determination.",
-    founded: 1995,
-    stadium: "Bank of America Stadium",
-    colors: { primary: "#0085CA", secondary: "#101820" },
-  },
-]
+import { getTeams, type Team } from "@/lib/team-data"
 
 // Animation variants
 const containerVariants = {
@@ -218,10 +37,28 @@ const itemVariants = {
 export default function TeamsClientPage() {
   const [isClient, setIsClient] = useState(false)
   const [selectedConference, setSelectedConference] = useState<string>("all")
+  const [teams, setTeams] = useState<Team[]>([])
 
   useEffect(() => {
     setIsClient(true)
+    loadTeams()
+
+    // Listen for team updates
+    const handleTeamUpdate = () => {
+      loadTeams()
+    }
+
+    window.addEventListener("stc-teams-updated", handleTeamUpdate)
+
+    return () => {
+      window.removeEventListener("stc-teams-updated", handleTeamUpdate)
+    }
   }, [])
+
+  const loadTeams = () => {
+    const teamData = getTeams()
+    setTeams(teamData)
+  }
 
   const filteredTeams =
     selectedConference === "all" ? teams : teams.filter((team) => team.conference === selectedConference)

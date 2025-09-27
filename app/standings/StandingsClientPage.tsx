@@ -8,194 +8,62 @@ import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import Image from "next/image"
 import { Trophy, TrendingUp, TrendingDown, Minus } from "lucide-react"
+import { getTeams, type Team } from "@/lib/team-data"
 
-interface TeamStanding {
+interface TeamStanding extends Team {
   rank: number
-  team: string
-  city: string
-  logo: string
-  conference: string
-  division: string
-  wins: number
-  losses: number
   winPercentage: number
-  pointsFor: number
-  pointsAgainst: number
   pointsDiff: number
-  streak: string
   lastWeek?: number
 }
-
-const standings: TeamStanding[] = [
-  {
-    rank: 1,
-    team: "Ravens",
-    city: "Baltimore",
-    logo: "/images/team-logos/BAL.png",
-    conference: "AFC",
-    division: "North",
-    wins: 2,
-    losses: 0,
-    winPercentage: 1.0,
-    pointsFor: 63,
-    pointsAgainst: 38,
-    pointsDiff: 25,
-    streak: "W2",
-    lastWeek: 3,
-  },
-  {
-    rank: 2,
-    team: "Chiefs",
-    city: "Kansas City",
-    logo: "/images/team-logos/KAN.png",
-    conference: "AFC",
-    division: "West",
-    wins: 2,
-    losses: 0,
-    winPercentage: 1.0,
-    pointsFor: 59,
-    pointsAgainst: 42,
-    pointsDiff: 17,
-    streak: "W2",
-    lastWeek: 1,
-  },
-  {
-    rank: 3,
-    team: "Jets",
-    city: "New York",
-    logo: "/images/team-logos/NYJ.png",
-    conference: "AFC",
-    division: "East",
-    wins: 2,
-    losses: 0,
-    winPercentage: 1.0,
-    pointsFor: 41,
-    pointsAgainst: 30,
-    pointsDiff: 11,
-    streak: "W2",
-    lastWeek: 5,
-  },
-  {
-    rank: 4,
-    team: "49ers",
-    city: "San Francisco",
-    logo: "/images/team-logos/49ERS.png",
-    conference: "NFC",
-    division: "West",
-    wins: 1,
-    losses: 1,
-    winPercentage: 0.5,
-    pointsFor: 55,
-    pointsAgainst: 51,
-    pointsDiff: 4,
-    streak: "L1",
-    lastWeek: 2,
-  },
-  {
-    rank: 5,
-    team: "Dolphins",
-    city: "Miami",
-    logo: "/images/team-logos/MIA.png",
-    conference: "AFC",
-    division: "East",
-    wins: 1,
-    losses: 1,
-    winPercentage: 0.5,
-    pointsFor: 44,
-    pointsAgainst: 45,
-    pointsDiff: -1,
-    streak: "W1",
-    lastWeek: 7,
-  },
-  {
-    rank: 6,
-    team: "Jaguars",
-    city: "Jacksonville",
-    logo: "/images/team-logos/JAX.png",
-    conference: "AFC",
-    division: "South",
-    wins: 1,
-    losses: 1,
-    winPercentage: 0.5,
-    pointsFor: 38,
-    pointsAgainst: 38,
-    pointsDiff: 0,
-    streak: "W1",
-    lastWeek: 8,
-  },
-  {
-    rank: 7,
-    team: "Buccaneers",
-    city: "Tampa Bay",
-    logo: "/images/team-logos/TB.png",
-    conference: "NFC",
-    division: "South",
-    wins: 0,
-    losses: 1,
-    winPercentage: 0.0,
-    pointsFor: 10,
-    pointsAgainst: 35,
-    pointsDiff: -25,
-    streak: "L1",
-    lastWeek: 4,
-  },
-  {
-    rank: 8,
-    team: "Panthers",
-    city: "Carolina",
-    logo: "/images/team-logos/CAR.png",
-    conference: "NFC",
-    division: "South",
-    wins: 0,
-    losses: 1,
-    winPercentage: 0.0,
-    pointsFor: 13,
-    pointsAgainst: 20,
-    pointsDiff: -7,
-    streak: "L1",
-    lastWeek: 6,
-  },
-  {
-    rank: 9,
-    team: "Rams",
-    city: "Los Angeles",
-    logo: "/images/team-logos/LAR.png",
-    conference: "NFC",
-    division: "West",
-    wins: 0,
-    losses: 2,
-    winPercentage: 0.0,
-    pointsFor: 41,
-    pointsAgainst: 52,
-    pointsDiff: -11,
-    streak: "L2",
-    lastWeek: 9,
-  },
-  {
-    rank: 10,
-    team: "Bears",
-    city: "Chicago",
-    logo: "/images/team-logos/CHI.png",
-    conference: "NFC",
-    division: "North",
-    wins: 0,
-    losses: 2,
-    winPercentage: 0.0,
-    pointsFor: 38,
-    pointsAgainst: 59,
-    pointsDiff: -21,
-    streak: "L2",
-    lastWeek: 10,
-  },
-]
 
 export default function StandingsClientPage() {
   const [isClient, setIsClient] = useState(false)
   const [selectedView, setSelectedView] = useState<string>("overall")
+  const [standings, setStandings] = useState<TeamStanding[]>([])
 
   useEffect(() => {
     setIsClient(true)
+    loadStandings()
+
+    // Listen for team updates
+    const handleTeamUpdate = () => {
+      loadStandings()
+    }
+
+    window.addEventListener("stc-teams-updated", handleTeamUpdate)
+
+    return () => {
+      window.removeEventListener("stc-teams-updated", handleTeamUpdate)
+    }
   }, [])
+
+  const loadStandings = () => {
+    const teams = getTeams()
+
+    // Calculate standings
+    const teamStandings: TeamStanding[] = teams.map((team, index) => ({
+      ...team,
+      rank: index + 1,
+      winPercentage: team.wins + team.losses > 0 ? team.wins / (team.wins + team.losses) : 0,
+      pointsDiff: (team.pointsFor || 0) - (team.pointsAgainst || 0),
+      lastWeek: index + 3, // Simulate last week ranking
+    }))
+
+    // Sort by wins, then by point differential
+    teamStandings.sort((a, b) => {
+      if (b.wins !== a.wins) return b.wins - a.wins
+      if (b.winPercentage !== a.winPercentage) return b.winPercentage - a.winPercentage
+      return b.pointsDiff - a.pointsDiff
+    })
+
+    // Update ranks
+    teamStandings.forEach((team, index) => {
+      team.rank = index + 1
+    })
+
+    setStandings(teamStandings)
+  }
 
   const getRankChange = (currentRank: number, lastWeek?: number) => {
     if (!lastWeek) return null

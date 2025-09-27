@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import Image from "next/image"
 import Link from "next/link"
 import { Calendar, Clock, Tv } from "lucide-react"
+import { getTeams } from "@/lib/team-data"
 
 // Define the schedule data structure
 interface GameMatchup {
@@ -31,20 +32,6 @@ interface WeekSchedule {
   games: GameMatchup[]
 }
 
-// Team logo mapping
-const teamLogos: { [key: string]: string } = {
-  Ravens: "/images/team-logos/BAL.png",
-  Chiefs: "/images/team-logos/KAN.png",
-  Jets: "/images/team-logos/NYJ.png",
-  Dolphins: "/images/team-logos/MIA.png",
-  Jaguars: "/images/team-logos/JAX.png",
-  "49ers": "/images/team-logos/49ERS.png",
-  Rams: "/images/team-logos/LAR.png",
-  Bears: "/images/team-logos/CHI.png",
-  Buccaneers: "/images/team-logos/TB.png",
-  Panthers: "/images/team-logos/CAR.png",
-}
-
 // S14 STC Regular Season Schedule with scores
 const initialScheduleData: WeekSchedule[] = [
   {
@@ -55,8 +42,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w1-g1",
         awayTeam: "Bears",
         homeTeam: "Chiefs",
-        awayTeamLogo: teamLogos["Bears"],
-        homeTeamLogo: teamLogos["Chiefs"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Thu, Sep 18",
         time: "8:20 PM ET",
         day: "Thursday",
@@ -68,8 +55,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w1-g2",
         awayTeam: "Jaguars",
         homeTeam: "Dolphins",
-        awayTeamLogo: teamLogos["Jaguars"],
-        homeTeamLogo: teamLogos["Dolphins"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Fri, Sep 19",
         time: "9:00 PM ET",
         day: "Friday",
@@ -81,8 +68,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w1-g3",
         awayTeam: "Rams",
         homeTeam: "49ers",
-        awayTeamLogo: teamLogos["Rams"],
-        homeTeamLogo: teamLogos["49ers"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Fri, Sep 19",
         time: "10:30 PM ET",
         day: "Friday",
@@ -94,8 +81,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w1-g4",
         awayTeam: "Jets",
         homeTeam: "Panthers",
-        awayTeamLogo: teamLogos["Jets"],
-        homeTeamLogo: teamLogos["Panthers"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Sat, Sep 20",
         time: "1:00 PM ET",
         day: "Saturday",
@@ -107,8 +94,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w1-g5",
         awayTeam: "Ravens",
         homeTeam: "Buccaneers",
-        awayTeamLogo: teamLogos["Ravens"],
-        homeTeamLogo: teamLogos["Buccaneers"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Sat, Sep 20",
         time: "9:45 PM ET",
         day: "Saturday",
@@ -126,8 +113,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w2-g1",
         awayTeam: "Dolphins",
         homeTeam: "49ers",
-        awayTeamLogo: teamLogos["Dolphins"],
-        homeTeamLogo: teamLogos["49ers"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Sun, Sep 21",
         time: "7:30 PM ET",
         day: "Sunday",
@@ -139,8 +126,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w2-g2",
         awayTeam: "Rams",
         homeTeam: "Jets",
-        awayTeamLogo: teamLogos["Rams"],
-        homeTeamLogo: teamLogos["Jets"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Tue, Sep 23",
         time: "9:45 PM ET",
         day: "Tuesday",
@@ -152,8 +139,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w2-g3",
         awayTeam: "Chiefs",
         homeTeam: "Ravens",
-        awayTeamLogo: teamLogos["Chiefs"],
-        homeTeamLogo: teamLogos["Ravens"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Wed, Sep 24",
         time: "8:15 PM ET",
         day: "Wednesday",
@@ -165,8 +152,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w2-g4",
         awayTeam: "Jaguars",
         homeTeam: "Bears",
-        awayTeamLogo: teamLogos["Jaguars"],
-        homeTeamLogo: teamLogos["Bears"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Fri, Sep 26",
         time: "8:15 PM ET",
         day: "Friday",
@@ -176,8 +163,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w2-g5",
         awayTeam: "Panthers",
         homeTeam: "Buccaneers",
-        awayTeamLogo: teamLogos["Panthers"],
-        homeTeamLogo: teamLogos["Buccaneers"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Mon, Sep 29",
         time: "8:30 PM ET",
         day: "Monday",
@@ -193,8 +180,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w3-g1",
         awayTeam: "Bears",
         homeTeam: "Dolphins",
-        awayTeamLogo: teamLogos["Bears"],
-        homeTeamLogo: teamLogos["Dolphins"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Wed, Oct 1",
         time: "8:15 PM ET",
         day: "Wednesday",
@@ -204,8 +191,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w3-g2",
         awayTeam: "Rams",
         homeTeam: "Jaguars",
-        awayTeamLogo: teamLogos["Rams"],
-        homeTeamLogo: teamLogos["Jaguars"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Thu, Oct 2",
         time: "8:15 PM ET",
         day: "Thursday",
@@ -215,8 +202,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w3-g3",
         awayTeam: "49ers",
         homeTeam: "Panthers",
-        awayTeamLogo: teamLogos["49ers"],
-        homeTeamLogo: teamLogos["Panthers"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Sat, Oct 4",
         time: "1:00 PM ET",
         day: "Saturday",
@@ -226,8 +213,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w3-g4",
         awayTeam: "Ravens",
         homeTeam: "Jets",
-        awayTeamLogo: teamLogos["Ravens"],
-        homeTeamLogo: teamLogos["Jets"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Sun, Oct 5",
         time: "8:20 PM ET",
         day: "Sunday",
@@ -237,8 +224,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w3-g5",
         awayTeam: "Buccaneers",
         homeTeam: "Chiefs",
-        awayTeamLogo: teamLogos["Buccaneers"],
-        homeTeamLogo: teamLogos["Chiefs"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Mon, Oct 6",
         time: "8:15 PM ET",
         day: "Monday",
@@ -254,8 +241,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w4-g1",
         awayTeam: "Dolphins",
         homeTeam: "Rams",
-        awayTeamLogo: teamLogos["Dolphins"],
-        homeTeamLogo: teamLogos["Rams"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Wed, Oct 8",
         time: "8:15 PM ET",
         day: "Wednesday",
@@ -265,8 +252,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w4-g2",
         awayTeam: "Jaguars",
         homeTeam: "Ravens",
-        awayTeamLogo: teamLogos["Jaguars"],
-        homeTeamLogo: teamLogos["Ravens"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Thu, Oct 9",
         time: "8:30 PM ET",
         day: "Thursday",
@@ -276,8 +263,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w4-g3",
         awayTeam: "Jets",
         homeTeam: "Chiefs",
-        awayTeamLogo: teamLogos["Jets"],
-        homeTeamLogo: teamLogos["Chiefs"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Sat, Oct 11",
         time: "1:00 PM ET",
         day: "Saturday",
@@ -287,8 +274,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w4-g4",
         awayTeam: "Buccaneers",
         homeTeam: "49ers",
-        awayTeamLogo: teamLogos["Buccaneers"],
-        homeTeamLogo: teamLogos["49ers"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Sun, Oct 12",
         time: "8:20 PM ET",
         day: "Sunday",
@@ -298,8 +285,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w4-g5",
         awayTeam: "Panthers",
         homeTeam: "Bears",
-        awayTeamLogo: teamLogos["Panthers"],
-        homeTeamLogo: teamLogos["Bears"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Mon, Oct 13",
         time: "7:15 PM ET",
         day: "Monday",
@@ -315,8 +302,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w5-g1",
         awayTeam: "Rams",
         homeTeam: "Panthers",
-        awayTeamLogo: teamLogos["Rams"],
-        homeTeamLogo: teamLogos["Panthers"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Wed, Oct 15",
         time: "8:15 PM ET",
         day: "Wednesday",
@@ -326,8 +313,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w5-g2",
         awayTeam: "Ravens",
         homeTeam: "Dolphins",
-        awayTeamLogo: teamLogos["Ravens"],
-        homeTeamLogo: teamLogos["Dolphins"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Thu, Oct 16",
         time: "8:30 PM ET",
         day: "Thursday",
@@ -337,8 +324,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w5-g3",
         awayTeam: "Bears",
         homeTeam: "Buccaneers",
-        awayTeamLogo: teamLogos["Bears"],
-        homeTeamLogo: teamLogos["Buccaneers"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Sat, Oct 18",
         time: "1:00 PM ET",
         day: "Saturday",
@@ -348,8 +335,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w5-g4",
         awayTeam: "49ers",
         homeTeam: "Chiefs",
-        awayTeamLogo: teamLogos["49ers"],
-        homeTeamLogo: teamLogos["Chiefs"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Sun, Oct 19",
         time: "8:20 PM ET",
         day: "Sunday",
@@ -359,8 +346,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w5-g5",
         awayTeam: "Jets",
         homeTeam: "Jaguars",
-        awayTeamLogo: teamLogos["Jets"],
-        homeTeamLogo: teamLogos["Jaguars"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Mon, Oct 20",
         time: "8:15 PM ET",
         day: "Monday",
@@ -376,8 +363,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w6-g1",
         awayTeam: "Dolphins",
         homeTeam: "Jets",
-        awayTeamLogo: teamLogos["Dolphins"],
-        homeTeamLogo: teamLogos["Jets"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Wed, Oct 22",
         time: "8:30 PM ET",
         day: "Wednesday",
@@ -388,8 +375,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w6-g2",
         awayTeam: "49ers",
         homeTeam: "Bears",
-        awayTeamLogo: teamLogos["49ers"],
-        homeTeamLogo: teamLogos["Bears"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Thu, Oct 23",
         time: "8:15 PM ET",
         day: "Thursday",
@@ -399,8 +386,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w6-g3",
         awayTeam: "Panthers",
         homeTeam: "Ravens",
-        awayTeamLogo: teamLogos["Panthers"],
-        homeTeamLogo: teamLogos["Ravens"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Sat, Oct 25",
         time: "1:00 PM ET",
         day: "Saturday",
@@ -410,8 +397,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w6-g4",
         awayTeam: "Buccaneers",
         homeTeam: "Rams",
-        awayTeamLogo: teamLogos["Buccaneers"],
-        homeTeamLogo: teamLogos["Rams"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Sun, Oct 26",
         time: "8:20 PM ET",
         day: "Sunday",
@@ -421,8 +408,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w6-g5",
         awayTeam: "Chiefs",
         homeTeam: "Jaguars",
-        awayTeamLogo: teamLogos["Chiefs"],
-        homeTeamLogo: teamLogos["Jaguars"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Mon, Oct 27",
         time: "8:15 PM ET",
         day: "Monday",
@@ -438,8 +425,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w7-g1",
         awayTeam: "Jets",
         homeTeam: "Bears",
-        awayTeamLogo: teamLogos["Jets"],
-        homeTeamLogo: teamLogos["Bears"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Wed, Oct 29",
         time: "8:15 PM ET",
         day: "Wednesday",
@@ -449,8 +436,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w7-g2",
         awayTeam: "Rams",
         homeTeam: "Ravens",
-        awayTeamLogo: teamLogos["Rams"],
-        homeTeamLogo: teamLogos["Ravens"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Thu, Oct 30",
         time: "8:15 PM ET",
         day: "Thursday",
@@ -460,8 +447,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w7-g3",
         awayTeam: "Jaguars",
         homeTeam: "49ers",
-        awayTeamLogo: teamLogos["Jaguars"],
-        homeTeamLogo: teamLogos["49ers"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Sat, Nov 1",
         time: "1:00 PM ET",
         day: "Saturday",
@@ -471,8 +458,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w7-g4",
         awayTeam: "Chiefs",
         homeTeam: "Panthers",
-        awayTeamLogo: teamLogos["Chiefs"],
-        homeTeamLogo: teamLogos["Panthers"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Sun, Nov 2",
         time: "8:20 PM ET",
         day: "Sunday",
@@ -482,8 +469,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w7-g5",
         awayTeam: "Dolphins",
         homeTeam: "Buccaneers",
-        awayTeamLogo: teamLogos["Dolphins"],
-        homeTeamLogo: teamLogos["Buccaneers"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Mon, Nov 3",
         time: "8:30 PM ET",
         day: "Monday",
@@ -499,8 +486,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w8-g1",
         awayTeam: "Buccaneers",
         homeTeam: "Jets",
-        awayTeamLogo: teamLogos["Buccaneers"],
-        homeTeamLogo: teamLogos["Jets"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Wed, Nov 5",
         time: "8:15 PM ET",
         day: "Wednesday",
@@ -510,8 +497,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w8-g2",
         awayTeam: "Ravens",
         homeTeam: "49ers",
-        awayTeamLogo: teamLogos["Ravens"],
-        homeTeamLogo: teamLogos["49ers"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Thu, Nov 6",
         time: "8:15 PM ET",
         day: "Thursday",
@@ -521,8 +508,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w8-g3",
         awayTeam: "Bears",
         homeTeam: "Rams",
-        awayTeamLogo: teamLogos["Bears"],
-        homeTeamLogo: teamLogos["Rams"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Sat, Nov 8",
         time: "1:00 PM ET",
         day: "Saturday",
@@ -532,8 +519,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w8-g4",
         awayTeam: "Panthers",
         homeTeam: "Jaguars",
-        awayTeamLogo: teamLogos["Panthers"],
-        homeTeamLogo: teamLogos["Jaguars"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Sun, Nov 9",
         time: "8:30 PM ET",
         day: "Sunday",
@@ -543,8 +530,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w8-g5",
         awayTeam: "Chiefs",
         homeTeam: "Dolphins",
-        awayTeamLogo: teamLogos["Chiefs"],
-        homeTeamLogo: teamLogos["Dolphins"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Mon, Nov 10",
         time: "8:15 PM ET",
         day: "Monday",
@@ -560,8 +547,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w9-g1",
         awayTeam: "Jets",
         homeTeam: "49ers",
-        awayTeamLogo: teamLogos["Jets"],
-        homeTeamLogo: teamLogos["49ers"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Wed, Nov 12",
         time: "8:15 PM ET",
         day: "Wednesday",
@@ -571,8 +558,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w9-g2",
         awayTeam: "Panthers",
         homeTeam: "Dolphins",
-        awayTeamLogo: teamLogos["Panthers"],
-        homeTeamLogo: teamLogos["Dolphins"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Thu, Nov 13",
         time: "8:30 PM ET",
         day: "Thursday",
@@ -582,8 +569,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w9-g3",
         awayTeam: "Chiefs",
         homeTeam: "Rams",
-        awayTeamLogo: teamLogos["Chiefs"],
-        homeTeamLogo: teamLogos["Rams"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Sat, Nov 15",
         time: "1:00 PM ET",
         day: "Saturday",
@@ -593,8 +580,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w9-g4",
         awayTeam: "Jaguars",
         homeTeam: "Buccaneers",
-        awayTeamLogo: teamLogos["Jaguars"],
-        homeTeamLogo: teamLogos["Buccaneers"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Sun, Nov 16",
         time: "8:20 PM ET",
         day: "Sunday",
@@ -604,8 +591,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w9-g5",
         awayTeam: "Ravens",
         homeTeam: "Bears",
-        awayTeamLogo: teamLogos["Ravens"],
-        homeTeamLogo: teamLogos["Bears"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Mon, Nov 17",
         time: "8:15 PM ET",
         day: "Monday",
@@ -621,8 +608,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w10-g1",
         awayTeam: "Dolphins",
         homeTeam: "Buccaneers",
-        awayTeamLogo: teamLogos["Dolphins"],
-        homeTeamLogo: teamLogos["Buccaneers"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Wed, Nov 19",
         time: "8:15 PM ET",
         day: "Wednesday",
@@ -632,8 +619,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w10-g2",
         awayTeam: "Bears",
         homeTeam: "Jets",
-        awayTeamLogo: teamLogos["Bears"],
-        homeTeamLogo: teamLogos["Jets"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Thu, Nov 20",
         time: "8:15 PM ET",
         day: "Thursday",
@@ -643,8 +630,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w10-g3",
         awayTeam: "Panthers",
         homeTeam: "Chiefs",
-        awayTeamLogo: teamLogos["Panthers"],
-        homeTeamLogo: teamLogos["Chiefs"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Sat, Nov 22",
         time: "3:30 PM ET",
         day: "Saturday",
@@ -654,8 +641,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w10-g4",
         awayTeam: "Rams",
         homeTeam: "Ravens",
-        awayTeamLogo: teamLogos["Rams"],
-        homeTeamLogo: teamLogos["Ravens"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Sun, Nov 23",
         time: "8:20 PM ET",
         day: "Sunday",
@@ -665,8 +652,8 @@ const initialScheduleData: WeekSchedule[] = [
         id: "w10-g5",
         awayTeam: "49ers",
         homeTeam: "Jaguars",
-        awayTeamLogo: teamLogos["49ers"],
-        homeTeamLogo: teamLogos["Jaguars"],
+        awayTeamLogo: "",
+        homeTeamLogo: "",
         date: "Mon, Nov 24",
         time: "8:15 PM ET",
         day: "Monday",
@@ -704,10 +691,33 @@ export default function ScheduleClientPage() {
   const [isClient, setIsClient] = useState(false)
   const [activeWeek, setActiveWeek] = useState("1")
   const [scheduleData, setScheduleData] = useState<WeekSchedule[]>(initialScheduleData)
+  const [teams, setTeams] = useState<any[]>([])
 
   useEffect(() => {
     setIsClient(true)
-    // Load updated scores from localStorage (simulating admin updates)
+    loadTeams()
+    loadScheduleData()
+
+    // Listen for updates
+    const handleUpdate = () => {
+      loadTeams()
+      loadScheduleData()
+    }
+
+    window.addEventListener("stc-teams-updated", handleUpdate)
+
+    return () => {
+      window.removeEventListener("stc-teams-updated", handleUpdate)
+    }
+  }, [])
+
+  const loadTeams = () => {
+    const teamData = getTeams()
+    setTeams(teamData)
+  }
+
+  const loadScheduleData = () => {
+    // Load updated scores from localStorage
     const savedScores = localStorage.getItem("stc-game-scores")
     if (savedScores) {
       try {
@@ -725,7 +735,12 @@ export default function ScheduleClientPage() {
         console.error("Error loading saved scores:", error)
       }
     }
-  }, [])
+  }
+
+  const getTeamLogo = (teamName: string) => {
+    const team = teams.find((t) => t.name === teamName || `${t.city} ${t.name}`.includes(teamName))
+    return team?.logo || `/images/team-logos/${teamName.toUpperCase()}.png`
+  }
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -845,7 +860,7 @@ export default function ScheduleClientPage() {
                                 </div>
                                 <div className="w-12 h-12 relative">
                                   <Image
-                                    src={game.awayTeamLogo || "/placeholder.svg"}
+                                    src={getTeamLogo(game.awayTeam) || "/placeholder.svg"}
                                     alt={`${game.awayTeam} logo`}
                                     fill
                                     className="object-contain"
@@ -884,7 +899,7 @@ export default function ScheduleClientPage() {
                               >
                                 <div className="w-12 h-12 relative">
                                   <Image
-                                    src={game.homeTeamLogo || "/placeholder.svg"}
+                                    src={getTeamLogo(game.homeTeam) || "/placeholder.svg"}
                                     alt={`${game.homeTeam} logo`}
                                     fill
                                     className="object-contain"

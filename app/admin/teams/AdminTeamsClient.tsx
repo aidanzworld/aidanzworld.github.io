@@ -16,24 +16,14 @@ import { motion } from "framer-motion"
 import { ArrowLeft, Edit, Save, Users, Upload } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
-
-interface Team {
-  id: string
-  name: string
-  city: string
-  logo: string
-  conference: "AFC" | "NFC"
-  wins: number
-  losses: number
-  description: string
-}
+import { getTeams, updateTeam } from "@/lib/team-data"
 
 export default function AdminTeamsClient() {
   const router = useRouter()
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
-  const [teams, setTeams] = useState<Team[]>([])
-  const [editingTeam, setEditingTeam] = useState<Team | null>(null)
+  const [teams, setTeams] = useState<any[]>([])
+  const [editingTeam, setEditingTeam] = useState<any | null>(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [logoFile, setLogoFile] = useState<File | null>(null)
   const [logoPreview, setLogoPreview] = useState<string>("")
@@ -54,115 +44,11 @@ export default function AdminTeamsClient() {
   }, [router])
 
   const loadTeams = () => {
-    // Sample team data - Updated to your 10 teams
-    const sampleTeams: Team[] = [
-      // AFC Teams
-      {
-        id: "1",
-        name: "Ravens",
-        city: "Baltimore",
-        logo: "/images/team-logos/BAL.png",
-        conference: "AFC",
-        wins: 2,
-        losses: 0,
-        description: "A strong defensive team with championship aspirations.",
-      },
-      {
-        id: "2",
-        name: "Chiefs",
-        city: "Kansas City",
-        logo: "/images/team-logos/KAN.png",
-        conference: "AFC",
-        wins: 2,
-        losses: 0,
-        description: "The defending champions with explosive offensive potential.",
-      },
-      {
-        id: "3",
-        name: "Jets",
-        city: "New York",
-        logo: "/images/team-logos/NYJ.png",
-        conference: "AFC",
-        wins: 2,
-        losses: 0,
-        description: "A young team building around a talented core.",
-      },
-      {
-        id: "4",
-        name: "Dolphins",
-        city: "Miami",
-        logo: "/images/team-logos/MIA.png",
-        conference: "AFC",
-        wins: 1,
-        losses: 1,
-        description: "Fast-paced offense with a dynamic quarterback.",
-      },
-      {
-        id: "5",
-        name: "Jaguars",
-        city: "Jacksonville",
-        logo: "/images/team-logos/JAX.png",
-        conference: "AFC",
-        wins: 1,
-        losses: 1,
-        description: "An up-and-coming team with a bright future.",
-      },
-      // NFC Teams
-      {
-        id: "6",
-        name: "49ers",
-        city: "San Francisco",
-        logo: "/images/team-logos/49ERS.png",
-        conference: "NFC",
-        wins: 1,
-        losses: 1,
-        description: "A powerhouse team with championship experience.",
-      },
-      {
-        id: "7",
-        name: "Rams",
-        city: "Los Angeles",
-        logo: "/images/team-logos/LAR.png",
-        conference: "NFC",
-        wins: 0,
-        losses: 2,
-        description: "High-powered offense with elite playmakers.",
-      },
-      {
-        id: "8",
-        name: "Bears",
-        city: "Chicago",
-        logo: "/images/team-logos/CHI.png",
-        conference: "NFC",
-        wins: 0,
-        losses: 2,
-        description: "Historic franchise with a strong defensive tradition.",
-      },
-      {
-        id: "9",
-        name: "Buccaneers",
-        city: "Tampa Bay",
-        logo: "/images/team-logos/TB.png",
-        conference: "NFC",
-        wins: 0,
-        losses: 1,
-        description: "Championship contenders with veteran leadership.",
-      },
-      {
-        id: "10",
-        name: "Panthers",
-        city: "Carolina",
-        logo: "/images/team-logos/CAR.png",
-        conference: "NFC",
-        wins: 0,
-        losses: 1,
-        description: "Rebuilding team with young talent and potential.",
-      },
-    ]
-    setTeams(sampleTeams)
+    const teamsData = getTeams()
+    setTeams(teamsData)
   }
 
-  const handleEditTeam = (team: Team) => {
+  const handleEditTeam = (team: any) => {
     setEditingTeam({ ...team })
     setLogoPreview(team.logo)
     setLogoFile(null)
@@ -189,7 +75,15 @@ export default function AdminTeamsClient() {
         editingTeam.logo = logoPreview
       }
 
+      // Update team in global storage
+      updateTeam(editingTeam)
+
+      // Update local state
       setTeams(teams.map((team) => (team.id === editingTeam.id ? editingTeam : team)))
+
+      // Trigger a storage event to update other components
+      window.dispatchEvent(new Event("stc-teams-updated"))
+
       setIsDialogOpen(false)
       setEditingTeam(null)
       setLogoFile(null)
@@ -197,7 +91,7 @@ export default function AdminTeamsClient() {
     }
   }
 
-  const updateEditingTeam = (field: keyof Team, value: any) => {
+  const updateEditingTeam = (field: string, value: any) => {
     if (editingTeam) {
       setEditingTeam({ ...editingTeam, [field]: value })
     }
