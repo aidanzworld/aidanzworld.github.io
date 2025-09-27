@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { motion } from "framer-motion"
-import { ArrowLeft, Edit, Save, Calendar, Trophy, Filter } from "lucide-react"
+import { ArrowLeft, Edit, Save, Calendar, Trophy, Filter, RefreshCw } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 
@@ -59,56 +59,69 @@ export default function AdminGamesClient() {
   }, [router])
 
   const loadGames = () => {
-    // Sample game data - in real app this would come from API
+    // Sample game data - matches the schedule structure
     const sampleGames: Game[] = [
       {
-        id: "1",
-        week: 12,
+        id: "w1-g1",
+        week: 1,
         homeTeam: { name: "Chiefs", city: "Kansas City", logo: "/images/team-logos/KAN.png" },
-        awayTeam: { name: "Raiders", city: "Las Vegas", logo: "/images/team-logos/LV.png" },
+        awayTeam: { name: "Bears", city: "Chicago", logo: "/images/team-logos/CHI.png" },
         homeScore: 28,
-        awayScore: 17,
+        awayScore: 14,
         status: "final",
-        date: "2024-11-24",
-        time: "1:00 PM",
+        date: "2024-09-18",
+        time: "8:20 PM ET",
       },
       {
-        id: "2",
-        week: 12,
+        id: "w1-g2",
+        week: 1,
         homeTeam: { name: "Dolphins", city: "Miami", logo: "/images/team-logos/MIA.png" },
-        awayTeam: { name: "Colts", city: "Indianapolis", logo: "/images/team-logos/IND.png" },
-        homeScore: 24,
+        awayTeam: { name: "Jaguars", city: "Jacksonville", logo: "/images/team-logos/JAX.png" },
+        homeScore: 17,
         awayScore: 21,
         status: "final",
-        date: "2024-11-24",
-        time: "4:25 PM",
+        date: "2024-09-19",
+        time: "9:00 PM ET",
       },
       {
-        id: "3",
-        week: 13,
-        homeTeam: { name: "Saints", city: "New Orleans", logo: "/images/team-logos/NO.png" },
-        awayTeam: { name: "49ers", city: "San Francisco", logo: "/images/team-logos/49ERS.png" },
-        status: "scheduled",
-        date: "2024-12-01",
-        time: "1:00 PM",
+        id: "w1-g3",
+        week: 1,
+        homeTeam: { name: "49ers", city: "San Francisco", logo: "/images/team-logos/49ERS.png" },
+        awayTeam: { name: "Rams", city: "Los Angeles", logo: "/images/team-logos/LAR.png" },
+        homeScore: 31,
+        awayScore: 24,
+        status: "final",
+        date: "2024-09-19",
+        time: "10:30 PM ET",
       },
       {
-        id: "4",
-        week: 13,
-        homeTeam: { name: "Falcons", city: "Atlanta", logo: "/images/team-logos/ATL.png" },
-        awayTeam: { name: "Oilers", city: "Houston", logo: "/images/team-logos/OILERS.png" },
-        status: "scheduled",
-        date: "2024-12-01",
-        time: "4:25 PM",
+        id: "w2-g1",
+        week: 2,
+        homeTeam: { name: "49ers", city: "San Francisco", logo: "/images/team-logos/49ERS.png" },
+        awayTeam: { name: "Dolphins", city: "Miami", logo: "/images/team-logos/MIA.png" },
+        homeScore: 24,
+        awayScore: 27,
+        status: "final",
+        date: "2024-09-21",
+        time: "7:30 PM ET",
       },
       {
-        id: "5",
-        week: 14,
-        homeTeam: { name: "Colts", city: "Indianapolis", logo: "/images/team-logos/IND.png" },
-        awayTeam: { name: "Chiefs", city: "Kansas City", logo: "/images/team-logos/KAN.png" },
+        id: "w2-g4",
+        week: 2,
+        homeTeam: { name: "Bears", city: "Chicago", logo: "/images/team-logos/CHI.png" },
+        awayTeam: { name: "Jaguars", city: "Jacksonville", logo: "/images/team-logos/JAX.png" },
         status: "scheduled",
-        date: "2024-12-08",
-        time: "8:20 PM",
+        date: "2024-09-26",
+        time: "8:15 PM ET",
+      },
+      {
+        id: "w3-g1",
+        week: 3,
+        homeTeam: { name: "Dolphins", city: "Miami", logo: "/images/team-logos/MIA.png" },
+        awayTeam: { name: "Bears", city: "Chicago", logo: "/images/team-logos/CHI.png" },
+        status: "scheduled",
+        date: "2024-10-01",
+        time: "8:15 PM ET",
       },
     ]
     setGames(sampleGames)
@@ -126,7 +139,38 @@ export default function AdminGamesClient() {
         editingGame.status = "final"
       }
 
+      // Update local games state
       setGames(games.map((game) => (game.id === editingGame.id ? editingGame : game)))
+
+      // Save to localStorage to sync with public schedule
+      const savedScores = localStorage.getItem("stc-game-scores")
+      let allScores = []
+
+      try {
+        allScores = savedScores ? JSON.parse(savedScores) : []
+      } catch (error) {
+        allScores = []
+      }
+
+      // Update or add the game score
+      const existingIndex = allScores.findIndex((s: any) => s.id === editingGame.id)
+      const gameData = {
+        id: editingGame.id,
+        homeScore: editingGame.homeScore,
+        awayScore: editingGame.awayScore,
+        status: editingGame.status,
+        date: editingGame.date,
+        time: editingGame.time,
+      }
+
+      if (existingIndex >= 0) {
+        allScores[existingIndex] = gameData
+      } else {
+        allScores.push(gameData)
+      }
+
+      localStorage.setItem("stc-game-scores", JSON.stringify(allScores))
+
       setIsDialogOpen(false)
       setEditingGame(null)
     }
@@ -230,6 +274,17 @@ export default function AdminGamesClient() {
       </div>
 
       <div className="container mx-auto px-4 py-8">
+        {/* Info Banner */}
+        <div className="mb-6 p-4 bg-blue-600/20 border border-blue-400/30 rounded-lg">
+          <div className="flex items-center space-x-2">
+            <RefreshCw className="w-5 h-5 text-blue-400" />
+            <p className="text-white">
+              <strong>Note:</strong> Score updates will automatically appear on the public schedule page. Games with
+              scores will be marked as "Final".
+            </p>
+          </div>
+        </div>
+
         {/* Games Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {filteredGames.map((game, index) => (
@@ -279,7 +334,15 @@ export default function AdminGamesClient() {
                           {game.awayTeam.city} {game.awayTeam.name}
                         </span>
                       </div>
-                      <div className="text-2xl font-bold text-white">{game.awayScore ?? "-"}</div>
+                      <div
+                        className={`text-2xl font-bold ${
+                          game.status === "final" && (game.awayScore ?? 0) > (game.homeScore ?? 0)
+                            ? "text-green-400"
+                            : "text-white"
+                        }`}
+                      >
+                        {game.awayScore ?? "-"}
+                      </div>
                     </div>
 
                     <div className="flex items-center justify-center">
@@ -300,7 +363,15 @@ export default function AdminGamesClient() {
                           {game.homeTeam.city} {game.homeTeam.name}
                         </span>
                       </div>
-                      <div className="text-2xl font-bold text-white">{game.homeScore ?? "-"}</div>
+                      <div
+                        className={`text-2xl font-bold ${
+                          game.status === "final" && (game.homeScore ?? 0) > (game.awayScore ?? 0)
+                            ? "text-green-400"
+                            : "text-white"
+                        }`}
+                      >
+                        {game.homeScore ?? "-"}
+                      </div>
                     </div>
                   </div>
                 </CardContent>
@@ -314,7 +385,9 @@ export default function AdminGamesClient() {
           <DialogContent className="bg-black border-white/20 text-white max-w-md">
             <DialogHeader>
               <DialogTitle>Edit Game</DialogTitle>
-              <DialogDescription className="text-gray-400">Update game scores and information</DialogDescription>
+              <DialogDescription className="text-gray-400">
+                Update game scores and information. Changes will appear on the public schedule.
+              </DialogDescription>
             </DialogHeader>
             {editingGame && (
               <div className="space-y-4">
@@ -346,7 +419,7 @@ export default function AdminGamesClient() {
                       value={editingGame.time}
                       onChange={(e) => updateEditingGame("time", e.target.value)}
                       className="bg-gray-800 border-gray-600 text-white"
-                      placeholder="1:00 PM"
+                      placeholder="8:20 PM ET"
                     />
                   </div>
                 </div>

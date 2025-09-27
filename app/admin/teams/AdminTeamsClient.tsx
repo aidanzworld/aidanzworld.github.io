@@ -21,7 +21,6 @@ interface Team {
   city: string
   logo: string
   conference: "AFC" | "NFC"
-  division: "North" | "South" | "East" | "West"
   wins: number
   losses: number
   description: string
@@ -51,73 +50,109 @@ export default function AdminTeamsClient() {
   }, [router])
 
   const loadTeams = () => {
-    // Sample team data - in real app this would come from API
+    // Sample team data - Updated to your 10 teams
     const sampleTeams: Team[] = [
+      // AFC Teams
       {
         id: "1",
+        name: "Ravens",
+        city: "Baltimore",
+        logo: "/images/team-logos/BAL.png",
+        conference: "AFC",
+        wins: 0,
+        losses: 0,
+        description: "A strong defensive team with championship aspirations.",
+      },
+      {
+        id: "2",
         name: "Chiefs",
         city: "Kansas City",
         logo: "/images/team-logos/KAN.png",
         conference: "AFC",
-        division: "West",
-        wins: 10,
-        losses: 2,
-        description: "The defending champions looking to repeat their success.",
-      },
-      {
-        id: "2",
-        name: "Raiders",
-        city: "Las Vegas",
-        logo: "/images/team-logos/LV.png",
-        conference: "AFC",
-        division: "West",
-        wins: 6,
-        losses: 6,
-        description: "A team with a rich history looking to return to glory.",
+        wins: 0,
+        losses: 0,
+        description: "The defending champions with explosive offensive potential.",
       },
       {
         id: "3",
+        name: "Jets",
+        city: "New York",
+        logo: "/images/team-logos/NYJ.png",
+        conference: "AFC",
+        wins: 0,
+        losses: 0,
+        description: "A young team building around a talented core.",
+      },
+      {
+        id: "4",
         name: "Dolphins",
         city: "Miami",
         logo: "/images/team-logos/MIA.png",
         conference: "AFC",
-        division: "East",
-        wins: 8,
-        losses: 4,
-        description: "A young team with explosive offensive potential.",
-      },
-      {
-        id: "4",
-        name: "Colts",
-        city: "Indianapolis",
-        logo: "/images/team-logos/IND.png",
-        conference: "AFC",
-        division: "South",
-        wins: 7,
-        losses: 5,
-        description: "A franchise with championship aspirations.",
+        wins: 0,
+        losses: 0,
+        description: "Fast-paced offense with a dynamic quarterback.",
       },
       {
         id: "5",
-        name: "Saints",
-        city: "New Orleans",
-        logo: "/images/team-logos/NO.png",
-        conference: "NFC",
-        division: "South",
-        wins: 5,
-        losses: 7,
-        description: "A team rebuilding for the future.",
+        name: "Jaguars",
+        city: "Jacksonville",
+        logo: "/images/team-logos/JAX.png",
+        conference: "AFC",
+        wins: 0,
+        losses: 0,
+        description: "An up-and-coming team with a bright future.",
       },
+      // NFC Teams
       {
         id: "6",
         name: "49ers",
         city: "San Francisco",
         logo: "/images/team-logos/49ERS.png",
         conference: "NFC",
-        division: "West",
-        wins: 9,
-        losses: 3,
+        wins: 0,
+        losses: 0,
         description: "A powerhouse team with championship experience.",
+      },
+      {
+        id: "7",
+        name: "Rams",
+        city: "Los Angeles",
+        logo: "/images/team-logos/LAR.png",
+        conference: "NFC",
+        wins: 0,
+        losses: 0,
+        description: "High-powered offense with elite playmakers.",
+      },
+      {
+        id: "8",
+        name: "Bears",
+        city: "Chicago",
+        logo: "/images/team-logos/CHI.png",
+        conference: "NFC",
+        wins: 0,
+        losses: 0,
+        description: "Historic franchise with a strong defensive tradition.",
+      },
+      {
+        id: "9",
+        name: "Buccaneers",
+        city: "Tampa Bay",
+        logo: "/images/team-logos/TB.png",
+        conference: "NFC",
+        wins: 0,
+        losses: 0,
+        description: "Championship contenders with veteran leadership.",
+      },
+      {
+        id: "10",
+        name: "Panthers",
+        city: "Carolina",
+        logo: "/images/team-logos/CAR.png",
+        conference: "NFC",
+        wins: 0,
+        losses: 0,
+        description: "Rebuilding team with young talent and potential.",
       },
     ]
     setTeams(sampleTeams)
@@ -212,9 +247,7 @@ export default function AdminTeamsClient() {
                         <CardTitle className="text-white">
                           {team.city} {team.name}
                         </CardTitle>
-                        <CardDescription className="text-gray-400">
-                          {team.conference} {team.division}
-                        </CardDescription>
+                        <CardDescription className="text-gray-400">{team.conference}</CardDescription>
                       </div>
                     </div>
                     <Button
@@ -242,7 +275,10 @@ export default function AdminTeamsClient() {
                     <div className="flex items-center justify-between">
                       <span className="text-gray-300">Win %:</span>
                       <span className="text-white font-medium">
-                        {((team.wins / (team.wins + team.losses)) * 100).toFixed(1)}%
+                        {team.wins + team.losses > 0
+                          ? ((team.wins / (team.wins + team.losses)) * 100).toFixed(1)
+                          : "0.0"}
+                        %
                       </span>
                     </div>
 
@@ -257,7 +293,7 @@ export default function AdminTeamsClient() {
                         variant="outline"
                         className={`${team.conference === "AFC" ? "border-blue-500 text-blue-400" : "border-red-500 text-red-400"}`}
                       >
-                        {team.conference} {team.division}
+                        {team.conference}
                       </Badge>
                     </div>
                   </div>
@@ -301,43 +337,22 @@ export default function AdminTeamsClient() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="conference" className="text-gray-300">
-                      Conference
-                    </Label>
-                    <Select
-                      value={editingTeam.conference}
-                      onValueChange={(value) => updateEditingTeam("conference", value)}
-                    >
-                      <SelectTrigger className="bg-gray-800 border-gray-600 text-white">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent className="bg-gray-800 border-gray-600">
-                        <SelectItem value="AFC">AFC</SelectItem>
-                        <SelectItem value="NFC">NFC</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label htmlFor="division" className="text-gray-300">
-                      Division
-                    </Label>
-                    <Select
-                      value={editingTeam.division}
-                      onValueChange={(value) => updateEditingTeam("division", value)}
-                    >
-                      <SelectTrigger className="bg-gray-800 border-gray-600 text-white">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent className="bg-gray-800 border-gray-600">
-                        <SelectItem value="North">North</SelectItem>
-                        <SelectItem value="South">South</SelectItem>
-                        <SelectItem value="East">East</SelectItem>
-                        <SelectItem value="West">West</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                <div>
+                  <Label htmlFor="conference" className="text-gray-300">
+                    Conference
+                  </Label>
+                  <Select
+                    value={editingTeam.conference}
+                    onValueChange={(value) => updateEditingTeam("conference", value)}
+                  >
+                    <SelectTrigger className="bg-gray-800 border-gray-600 text-white">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-gray-800 border-gray-600">
+                      <SelectItem value="AFC">AFC</SelectItem>
+                      <SelectItem value="NFC">NFC</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">

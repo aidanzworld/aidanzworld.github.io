@@ -266,3 +266,6 @@ export function getNewsBySlug(slug: string): NewsItem | undefined {
 
   return newsItems.find((item) => item.slug.trim().toLowerCase() === normalizedSearchSlug)
 }
+
+// Add this export alias for compatibility
+export const newsArticles = newsItems
